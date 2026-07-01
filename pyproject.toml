@@ -1,0 +1,40 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "portable-memory"
+version = "0.1.0"
+description = "An open, vendor-neutral format for AI memory portability — Python reference SDK."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{ name = "MacPaw" }]
+keywords = ["ai-memory", "memory-portability", "interoperability", "gdpr", "local-first"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries",
+]
+# Core is pure standard library (json, hashlib, dataclasses). Signing is optional.
+dependencies = []
+
+[project.optional-dependencies]
+signing = ["cryptography>=41"]
+dev = ["pytest>=7", "jsonschema>=4", "cryptography>=41"]
+
+[project.urls]
+Homepage = "https://github.com/MacPaw/portable-memory"
+Specification = "https://github.com/MacPaw/portable-memory/blob/main/Spec/portable-memory-spec.md"
+"Swift SDK" = "https://github.com/MacPaw/portable-memory-swift"
+
+[tool.hatch.build.targets.wheel]
+packages = ["portable_memory"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://macpaw.github.io/portable-memory/schemas/entity.schema.json",
+  "title": "Portable Memory entity",
+  "description": "items/entity.jsonl — a semantic graph node (person / org / project / place / product / document / topic). Enum-like fields are open strings for vendor neutrality.",
+  "type": "object",
+  "required": ["id", "type", "canonicalName", "aliases", "summary", "sensitivity", "updatedAt"],
+  "properties": {
+    "id": { "type": "string", "description": "globally unique, stable, kind-prefixed (e.g. ent_…)" },
+    "type": { "type": "string" },
+    "canonicalName": { "type": "string" },
+    "aliases": { "type": "array", "items": { "type": "string" } },
+    "summary": { "type": "string" },
+    "sensitivity": { "type": "string" },
+    "updatedAt": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": true
+}

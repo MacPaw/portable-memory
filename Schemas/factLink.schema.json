@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://macpaw.github.io/portable-memory/schemas/factLink.schema.json",
+  "title": "Portable Memory fact link",
+  "description": "items/factLink.jsonl — an evidence_of / refines link between facts. Keyed by its natural composite key (srcFactID + dstFactID + linkType); has no id.",
+  "type": "object",
+  "required": ["srcFactID", "dstFactID", "linkType", "createdAt"],
+  "properties": {
+    "srcFactID": { "type": "string" },
+    "dstFactID": { "type": "string" },
+    "linkType": { "type": "string" },
+    "createdAt": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://macpaw.github.io/portable-memory/schemas/fact.schema.json",
+  "title": "Portable Memory fact",
+  "description": "items/fact.jsonl — a derived subject–predicate–object triple. Bi-temporal (supersede, never overwrite) with a non-destructive prune marker; ties back to the episode that justifies it.",
+  "type": "object",
+  "required": ["id", "episodeID", "subject", "predicate", "object", "text", "tValidFrom", "confidence", "importance", "createdAt"],
+  "properties": {
+    "id": { "type": "string", "description": "globally unique, stable, kind-prefixed (e.g. fact_…)" },
+    "episodeID": { "type": "string", "description": "provenance: the episode this fact was extracted from" },
+    "subject": { "type": "string" },
+    "predicate": { "type": "string" },
+    "object": { "type": "string" },
+    "text": { "type": "string" },
+    "eventTime": { "type": ["string", "null"], "format": "date-time" },
+    "tValidFrom": { "type": "string", "format": "date-time" },
+    "tValidTo": { "type": ["string", "null"], "format": "date-time", "description": "null = currently valid" },
+    "supersededBy": { "type": ["string", "null"] },
+    "confidence": { "type": "number" },
+    "importance": { "type": "number" },
+    "speaker": { "type": ["string", "null"] },
+    "reconciledAt": { "type": ["string", "null"], "format": "date-time" },
+    "lastReinforcedAt": { "type": ["string", "null"], "format": "date-time" },
+    "prunedAt": { "type": ["string", "null"], "format": "date-time", "description": "non-destructive prune marker" },
+    "createdAt": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": true
+}

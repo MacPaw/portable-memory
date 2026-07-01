@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://macpaw.github.io/portable-memory/schemas/log.schema.json",
+  "title": "Portable Memory audit record",
+  "description": "audit/log.jsonl — one row of the portable mutation trail. The Evidence Pack (spec §6) is an exportable subset of these plus tombstones plus provenance.",
+  "type": "object",
+  "required": ["ts", "actor", "op", "targetID"],
+  "properties": {
+    "ts": { "type": "string", "format": "date-time", "description": "when the mutation happened (UTC, RFC 3339)" },
+    "actor": { "type": "string", "description": "who performed it (use an opaque id to avoid retaining PII)" },
+    "op": { "type": "string", "description": "the mutation, e.g. create | update | delete | redact" },
+    "targetID": { "type": "string" },
+    "reason": { "type": ["string", "null"] }
+  },
+  "additionalProperties": true
+}

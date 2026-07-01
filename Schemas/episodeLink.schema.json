@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://macpaw.github.io/portable-memory/schemas/episodeLink.schema.json",
+  "title": "Portable Memory episode link",
+  "description": "items/episodeLink.jsonl — a cross-link between episodes. Keyed by its natural composite key (srcEpisodeID + dstEpisodeID + linkType); has no id.",
+  "type": "object",
+  "required": ["srcEpisodeID", "dstEpisodeID", "linkType", "weight"],
+  "properties": {
+    "srcEpisodeID": { "type": "string" },
+    "dstEpisodeID": { "type": "string" },
+    "linkType": { "type": "string" },
+    "weight": { "type": "number" }
+  },
+  "additionalProperties": true
+}

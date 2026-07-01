@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://macpaw.github.io/portable-memory/schemas/tombstone.schema.json",
+  "title": "Portable Memory tombstone",
+  "description": "audit/tombstones.jsonl — a first-class, monotonic deletion record applied FIRST on import. Carries proof-of-reach: every derived artifact removed.",
+  "type": "object",
+  "required": ["id", "op", "targetKind", "targetID", "deletedAt", "actor", "derived"],
+  "properties": {
+    "id": { "type": "string" },
+    "op": { "type": "string", "enum": ["delete", "redact"], "description": "redact additionally purges the content text (erasure)" },
+    "targetKind": { "type": "string" },
+    "targetID": { "type": "string" },
+    "deletedAt": { "type": "string", "format": "date-time" },
+    "reason": { "type": ["string", "null"] },
+    "actor": { "type": "string" },
+    "derived": {
+      "type": "object",
+      "description": "proof-of-reach: the ids of every derived artifact removed + cache keys evicted",
+      "required": ["sentenceIDs", "factIDs", "edgeIDs", "entityIDs", "chunkIDs", "episodeLinkCount", "embeddingCacheKeys"],
+      "properties": {
+        "sentenceIDs": { "type": "array", "items": { "type": "string" } },
+        "factIDs": { "type": "array", "items": { "type": "string" } },
+        "edgeIDs": { "type": "array", "items": { "type": "string" } },
+        "entityIDs": { "type": "array", "items": { "type": "string" } },
+        "chunkIDs": { "type": "array", "items": { "type": "string" } },
+        "episodeLinkCount": { "type": "integer", "minimum": 0 },
+        "embeddingCacheKeys": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": true
+    },
+    "signature": { "type": ["string", "null"], "description": "optional ed25519 over the canonical record (L3)" }
+  },
+  "additionalProperties": true
+}

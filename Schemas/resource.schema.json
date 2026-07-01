@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://macpaw.github.io/portable-memory/schemas/resource.schema.json",
+  "title": "Portable Memory resource",
+  "description": "items/resource.jsonl — a file/doc reference and the parent of chunks.",
+  "type": "object",
+  "required": ["id", "uri", "mimeType", "contentHash", "title", "summary", "created", "modified"],
+  "properties": {
+    "id": { "type": "string", "description": "globally unique, stable, kind-prefixed (e.g. res_…)" },
+    "uri": { "type": "string" },
+    "mimeType": { "type": "string" },
+    "contentHash": { "type": "string", "description": "e.g. sha256:… over the resource content" },
+    "title": { "type": "string" },
+    "summary": { "type": "string" },
+    "created": { "type": "string", "format": "date-time" },
+    "modified": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": true
+}

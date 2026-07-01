@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://macpaw.github.io/portable-memory/schemas/category.schema.json",
+  "title": "Portable Memory category",
+  "description": "items/category.jsonl — a memory category. Keyed by name; has no id.",
+  "type": "object",
+  "required": ["name", "description"],
+  "properties": {
+    "name": { "type": "string" },
+    "description": { "type": "string" }
+  },
+  "additionalProperties": true
+}

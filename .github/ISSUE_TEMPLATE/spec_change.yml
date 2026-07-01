@@ -1,0 +1,32 @@
+name: Spec / format change
+description: Propose a change to the on-disk format, schemas, or a normative requirement.
+labels: ["spec"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Format-affecting changes are discussed **before** implementation (see
+        CONTRIBUTING and GOVERNANCE). Please describe the change and its compatibility
+        impact.
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: What should change in the spec / schemas, and why?
+    validations:
+      required: true
+  - type: dropdown
+    id: compat
+    attributes:
+      label: Compatibility impact
+      options:
+        - Backward-compatible addition (minor format bump)
+        - Breaking change (major format bump)
+        - Clarification only (no wire change)
+    validations:
+      required: true
+  - type: textarea
+    id: impls
+    attributes:
+      label: Affected implementations / adapters
+      description: Which implementations or adapters would need to change? (e.g. this Python SDK, the Swift SDK, an adapter.)
