@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://macpaw.github.io/portable-memory/schemas/community.schema.json",
+  "title": "Portable Memory community",
+  "description": "items/community.jsonl — a graph community grouping entities.",
+  "type": "object",
+  "required": ["id", "label", "summary", "memberEntityIDs"],
+  "properties": {
+    "id": { "type": "string", "description": "globally unique, stable, kind-prefixed (e.g. com_…)" },
+    "label": { "type": "string" },
+    "summary": { "type": "string" },
+    "memberEntityIDs": { "type": "array", "items": { "type": "string" } }
+  },
+  "additionalProperties": true
+}

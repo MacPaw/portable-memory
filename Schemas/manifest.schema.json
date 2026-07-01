@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://macpaw.github.io/portable-memory/schemas/manifest.schema.json",
+  "title": "Portable Memory manifest",
+  "description": "manifest.json — declares format version, capabilities, model tags, counts, and per-file integrity for a .mem bundle.",
+  "type": "object",
+  "required": ["format", "generator", "conformanceLevel", "createdAt", "exportMode", "schemaVersion", "embeddingModel", "embeddingDim", "embeddingsIncluded", "capabilities", "counts", "files"],
+  "properties": {
+    "format": { "type": "string", "description": "semver of the on-disk format" },
+    "generator": { "type": "string", "description": "<vendor>/<version>" },
+    "conformanceLevel": { "type": "string", "enum": ["L0", "L1", "L2", "L3"] },
+    "createdAt": { "type": "string", "format": "date-time" },
+    "exportMode": { "type": "string", "enum": ["full", "incremental"] },
+    "since": { "type": "string", "format": "date-time", "description": "present for incremental exports" },
+    "schemaVersion": { "type": "integer" },
+    "embeddingModel": { "type": "string" },
+    "embeddingDim": { "type": "integer", "minimum": 0 },
+    "embeddingsIncluded": { "type": "boolean", "description": "false ⇒ receiver re-embeds from source text" },
+    "capabilities": { "type": "array", "items": { "type": "string" } },
+    "counts": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 } },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "sha256", "bytes"],
+        "properties": {
+          "path": { "type": "string" },
+          "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "bytes": { "type": "integer", "minimum": 0 }
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}

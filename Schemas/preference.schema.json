@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://macpaw.github.io/portable-memory/schemas/preference.schema.json",
+  "title": "Portable Memory preference",
+  "description": "items/preference.jsonl — a durable user key/value setting. Keyed by key; has no id.",
+  "type": "object",
+  "required": ["key", "value"],
+  "properties": {
+    "key": { "type": "string" },
+    "value": { "type": "string" }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://macpaw.github.io/portable-memory/schemas/procedure.schema.json",
+  "title": "Portable Memory procedure",
+  "description": "items/procedure.jsonl — a user-defined routine (trigger + steps).",
+  "type": "object",
+  "required": ["id", "name", "triggerPattern", "steps", "successCount", "failureCount", "enabled"],
+  "properties": {
+    "id": { "type": "string", "description": "globally unique, stable, kind-prefixed (e.g. proc_…)" },
+    "name": { "type": "string" },
+    "triggerPattern": { "type": "string" },
+    "steps": { "type": "array", "items": { "type": "string" } },
+    "successCount": { "type": "integer", "minimum": 0 },
+    "failureCount": { "type": "integer", "minimum": 0 },
+    "lastUsed": { "type": ["string", "null"], "format": "date-time" },
+    "enabled": { "type": "boolean" }
+  },
+  "additionalProperties": true
+}

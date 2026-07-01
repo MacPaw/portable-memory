@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://macpaw.github.io/portable-memory/schemas/context.schema.json",
+  "title": "Portable Memory context",
+  "description": "items/context.jsonl — a scoping / tag node, optionally nested via parentID.",
+  "type": "object",
+  "required": ["id", "label", "archived", "createdAt"],
+  "properties": {
+    "id": { "type": "string", "description": "globally unique, stable, kind-prefixed (e.g. ctx_…)" },
+    "label": { "type": "string" },
+    "parentID": { "type": ["string", "null"] },
+    "archived": { "type": "boolean" },
+    "createdAt": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://macpaw.github.io/portable-memory/schemas/edge.schema.json",
+  "title": "Portable Memory edge",
+  "description": "items/edge.jsonl — a bi-temporal relation. Updates supersede, never overwrite: keep both rows, set tValidTo on the old one.",
+  "type": "object",
+  "required": ["id", "srcEntityID", "dstEntityID", "edgeType", "tValidFrom", "ingestionTime", "confidence", "evidenceEpisodeIDs"],
+  "properties": {
+    "id": { "type": "string" },
+    "srcEntityID": { "type": "string" },
+    "dstEntityID": { "type": "string" },
+    "edgeType": { "type": "string" },
+    "tValidFrom": { "type": "string", "format": "date-time" },
+    "tValidTo": { "type": ["string", "null"], "format": "date-time", "description": "null = currently valid" },
+    "ingestionTime": { "type": "string", "format": "date-time" },
+    "confidence": { "type": "number" },
+    "evidenceEpisodeIDs": { "type": "array", "items": { "type": "string" }, "description": "provenance: episodes that justify this edge" },
+    "supersededBy": { "type": ["string", "null"] }
+  },
+  "additionalProperties": true
+}

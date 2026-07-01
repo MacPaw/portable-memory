@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://macpaw.github.io/portable-memory/schemas/core.schema.json",
+  "title": "Portable Memory core block",
+  "description": "items/core.jsonl — an always-injected profile block (e.g. human | persona).",
+  "type": "object",
+  "required": ["id", "content", "charBudget", "version"],
+  "properties": {
+    "id": { "type": "string", "description": "profile block id (e.g. human | persona)" },
+    "content": { "type": "string" },
+    "charBudget": { "type": "integer", "minimum": 0 },
+    "version": { "type": "integer", "minimum": 0 }
+  },
+  "additionalProperties": true
+}

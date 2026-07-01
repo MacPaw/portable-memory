@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://macpaw.github.io/portable-memory/schemas/chunk.schema.json",
+  "title": "Portable Memory chunk",
+  "description": "items/chunk.jsonl — a resource fragment, re-embeddable from its text. Belongs to a resource.",
+  "type": "object",
+  "required": ["id", "resourceID", "position", "text", "sensitivity"],
+  "properties": {
+    "id": { "type": "string", "description": "globally unique, stable, kind-prefixed (e.g. chk_…)" },
+    "resourceID": { "type": "string", "description": "parent resource id" },
+    "position": { "type": "integer", "minimum": 0 },
+    "text": { "type": "string" },
+    "sensitivity": { "type": "string" },
+    "contextPrefix": { "type": ["string", "null"] }
+  },
+  "additionalProperties": true
+}

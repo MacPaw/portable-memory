@@ -1,0 +1,1 @@
+{"actor":"user","deletedAt":"2024-03-09T16:00:00Z","derived":{"chunkIDs":[],"edgeIDs":[],"embeddingCacheKeys":["abc"],"entityIDs":[],"episodeLinkCount":0,"factIDs":["fact_x"],"sentenceIDs":[]},"id":"tomb_0001","op":"delete","reason":"user erasure","targetID":"ep_legacy","targetKind":"episode"}

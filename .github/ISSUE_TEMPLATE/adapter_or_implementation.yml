@@ -1,0 +1,18 @@
+name: Adapter or implementation
+description: Propose or track an adapter (e.g. ChatGPT/Claude/Letta export) or an implementation in another language.
+labels: ["adapter", "interop"]
+body:
+  - type: input
+    id: target
+    attributes:
+      label: Source / language
+      description: e.g. "ChatGPT export → .mem", or "Go implementation of the reader".
+    validations:
+      required: true
+  - type: textarea
+    id: mapping
+    attributes:
+      label: Mapping / scope
+      description: How does it map to the model (episode/core/entity/…)? What rides in `ext`/passthrough? What conformance level do you target?
+    validations:
+      required: true
