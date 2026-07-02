@@ -87,12 +87,16 @@ result   = BundleValidator().validate("mybundle.mem")             # L0 check
 
 The core is **pure standard library** — `json`, `hashlib`, `dataclasses`, `os`. There is nothing to `await`: the Swift SDK is `async` only for actor isolation of its store, whereas this SDK does local file I/O synchronously, so the whole API is plain synchronous calls. The merge semantics — ordering, integrity checks, tombstone no-resurrection guard, byte-for-byte serialization — are identical.
 
-Ingest another vendor's export with an adapter (mem0 ships in the box):
+Ingest another vendor's export with an adapter (mem0, ChatGPT, and Claude ship in the box):
 
 ```python
-from portable_memory.adapters.mem0 import Mem0Adapter
+from portable_memory.adapters import Mem0Adapter, OpenAIAdapter, ClaudeAdapter
 
-episodes = Mem0Adapter.parse_episodes(open("mem0-export.json", "rb").read())  # -> [PortableEpisode]
+episodes  = Mem0Adapter.parse_episodes(open("mem0-export.json", "rb").read())
+episodes += OpenAIAdapter.parse_episodes(open("conversations.json", "rb").read())  # ChatGPT data export
+episodes += ClaudeAdapter.parse_episodes([                                          # Claude memory files
+    {"path": "memory/MEMORY.md", "content": open("memory/MEMORY.md").read()},
+])
 ```
 
 ## Deletion propagation — the trust core
