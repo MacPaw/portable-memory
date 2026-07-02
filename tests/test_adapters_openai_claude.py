@@ -118,3 +118,37 @@ def test_claude_no_frontmatter():
     assert eps[0].details == "Just a plain note."
     assert eps[0].summary == "Just a plain note."
     assert eps[0].categories == []
+
+
+def test_openai_multimodal_parts_keep_text_only():
+    conv = {"conversation_id": "c", "mapping": {"n": {"message": {
+        "id": "m1", "author": {"role": "user"},
+        "content": {"content_type": "multimodal_text",
+                    "parts": ["look at this", {"content_type": "image_asset_pointer"}]},
+        "create_time": 1700000100.0}}}}
+    eps = OpenAIAdapter.parse_episodes(json.dumps(conv))
+    assert len(eps) == 1
+    assert eps[0].details == "look at this"  # non-string parts skipped, text kept
+
+
+def test_openai_regeneration_branches_are_all_kept():
+    # A regenerated answer leaves BOTH assistant variants in the mapping tree. v1 keeps
+    # every visible turn (lossless superset); current_node path-following is a possible
+    # follow-up. This pins the include-all behavior.
+    conv = {"conversation_id": "c", "current_node": "v2", "mapping": {
+        "u": {"message": {"id": "m_u", "author": {"role": "user"},
+              "content": {"parts": ["q"]}, "create_time": 1.0}},
+        "v1": {"message": {"id": "m_v1", "author": {"role": "assistant"},
+               "content": {"parts": ["first answer"]}, "create_time": 2.0}},
+        "v2": {"message": {"id": "m_v2", "author": {"role": "assistant"},
+               "content": {"parts": ["regenerated answer"]}, "create_time": 3.0}},
+    }}
+    eps = OpenAIAdapter.parse_episodes(json.dumps(conv))
+    assert [e.id for e in eps] == ["m_u", "m_v1", "m_v2"]
+
+
+def test_claude_unclosed_frontmatter_falls_back_to_whole_content():
+    eps = ClaudeAdapter.parse_episodes([{"path": "broken.md",
+                                         "content": "---\nname: broken\nno closing fence"}])
+    assert len(eps) == 1
+    assert "name: broken" in eps[0].details  # nothing dropped

@@ -86,3 +86,14 @@ def test_mem0_sweep_never_overwrites_user_metadata():
     }]
     e = Mem0Adapter.parse_episodes(json.dumps(export))[0]
     assert e.metadata["mem0_score"] == "user-owned"
+
+
+def test_mem0_graph_relations_are_ignored_gracefully():
+    # With graph memory enabled, get_all()/search() return `relations` alongside
+    # `results`. v1 maps episodes only — relations must not crash or leak into output.
+    export = {
+        "results": [{"id": "m1", "memory": "hi", "created_at": "2024-07-01T12:00:00Z"}],
+        "relations": [{"source": "alex", "relationship": "lives_in", "destination": "sf"}],
+    }
+    eps = Mem0Adapter.parse_episodes(json.dumps(export))
+    assert len(eps) == 1 and eps[0].details == "hi"
