@@ -130,7 +130,14 @@ def _map_one(
         if isinstance(v, str) and v:
             meta[k] = v
 
-    categories = [c for c in o.get("categories", []) if isinstance(c, str)]
+    # Mirror Swift's `as? [String]`: a non-list (e.g. a bare string — which Python
+    # would happily iterate char-by-char) or a list with non-string members maps to [].
+    raw_categories = o.get("categories", [])
+    categories = (
+        raw_categories
+        if isinstance(raw_categories, list) and all(isinstance(c, str) for c in raw_categories)
+        else []
+    )
 
     raw_id = _opt_str(o.get("id"))
     episode_id = raw_id or ("ep_" + uuid.uuid4().hex[:16])
