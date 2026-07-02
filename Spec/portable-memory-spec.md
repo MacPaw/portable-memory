@@ -106,6 +106,14 @@ diverges here will fail the L0 checksum gate against another's bundle.
 - **Timestamps.** RFC 3339 in UTC with a literal `Z` and **whole-second** precision
   (no fractional seconds, no numeric offset), e.g. `2026-06-30T00:00:00Z`.
 
+> **Conformance vectors (normative).** `Conformance/vectors/canonical-json.json` pins
+> these rules as `input → canonical bytes → sha256` cases; a conformant implementation
+> MUST reproduce every vector. Values outside the tested domain are **not** guaranteed
+> byte-identical across implementations in v1 and SHOULD be avoided where cross-implementation
+> byte-identity matters: integral magnitudes ≥ 1e16, integers beyond `UInt64.max` (2^64−1),
+> and non-ASCII / non-BMP object keys. Integer fields beyond 2^53 require a bigint-aware
+> JSON parser.
+
 ### 1.2 Integrity files (normative)
 
 - Each `files[].sha256` (manifest, §3) and each `CHECKSUMS` entry is the **lowercase
@@ -141,6 +149,12 @@ OPTIONAL; when present it upgrades a bundle from integrity-only to authenticated
 - A verifier configured with a trusted key MUST reject a bundle whose `manifest.sig` is
   missing, malformed, or not signed by a trusted key. With no trusted key configured,
   signatures are ignored and only integrity is checked.
+- Signatures are **not** required to be byte-identical across implementations — some
+  Ed25519 libraries randomize the signing nonce, others are deterministic, and both
+  produce valid signatures. Verification against a trusted key is the interoperability
+  guarantee, so `manifest.sig` is **excluded** from the byte-reproducibility of §1.1 (the
+  data files, `manifest.json`, and `CHECKSUMS` are covered). A signed fixture and its test
+  keypair live in `Conformance/vectors/`.
 
 **Lossless superset (cross-vendor).** To carry any vendor's memory without loss, the
 container preserves what this engine doesn't natively model: **foreign fields** on the

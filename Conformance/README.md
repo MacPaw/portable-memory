@@ -56,3 +56,10 @@ completed by an adopter against its own retrieval stack.
 `fixtures/sample.mem/` is a small, valid bundle exercising episodes, an entity, an
 edge, an episode carrying a foreign `ext` field, a vendor-specific passthrough kind,
 and a tombstone (with proof-of-reach). Use it to test your importer and validator.
+
+## Vectors
+
+`vectors/` holds the language-neutral conformance oracle — `canonical-json.json`
+(`input → canonical bytes → sha256`) and a `signed.mem` fixture with its test keypair.
+Reproduce every vector and you are byte-interoperable with the reference SDKs. See
+[`vectors/README.md`](vectors/README.md).
