@@ -28,7 +28,11 @@ format (`format` **1.0.0**) and byte-for-byte interoperability with the
 - **Ed25519 signing (L3)** — detached bundle signatures (`manifest.sig`) and tombstone
   signatures, verified against caller-supplied trusted keys.
 - **Cross-vendor losslessness** — foreign episode fields via `ext` and foreign kinds via
-  verbatim passthrough; a mem0 adapter (`portable_memory/adapters/mem0.py`).
+  verbatim passthrough; a mem0 adapter (`portable_memory/adapters/mem0.py`), an
+  OpenAI adapter for the ChatGPT data export (`adapters/openai.py` —
+  `conversations.json` + a saved-memories fallback), and a Claude adapter for
+  Claude memory files (`adapters/claude.py` — `MEMORY.md` + topic files with
+  frontmatter).
 - **JSON Schemas** for every record kind, the manifest, tombstones, and the audit log,
   validated against samples in the test suite.
 - **Conformance kit** — a sample `.mem` fixture shared with the Swift SDK and validated in

@@ -2,9 +2,19 @@
 
 Mirrors the Swift ``Mem0Adapter`` (Sources/PortableMemory/Adapters/Mem0Adapter.swift):
 maps a mem0 export — a bare JSON array, or ``{"results":[...]}`` / ``{"memories":[...]}``
-/ ``{"data":[...]}`` — onto portable episodes. The format is a superset container, so
-whatever mem0 models that the portable schema doesn't is preserved in ``metadata``
-(namespaced ``mem0_*``) rather than dropped; a later ``.mem`` export stays lossless.
+/ ``{"data":[...]}`` (the platform's paginated envelope also wraps ``results``) — onto
+portable episodes. The format is a superset container, so whatever mem0 models that the
+portable schema doesn't is preserved in ``metadata`` (namespaced ``mem0_*``) rather than
+dropped; a later ``.mem`` export stays lossless. That includes a generic sweep of any
+top-level key the mapping doesn't recognize (``score``, ``immutable``, ``memory_type``,
+future platform fields, …).
+
+mem0's promoted per-memory keys (OSS ``promoted_payload_keys``) are ``user_id``,
+``agent_id``, ``run_id``, ``actor_id``, ``role``, ``attributed_to``, and
+``expiration_date`` — all read here; ``expiration_date`` (normalized ``YYYY-MM-DD``)
+additionally maps onto the episode's own ``expiration_date``. Graph ``relations``
+(returned alongside ``results`` when graph memory is enabled) are NOT mapped in v1 —
+adapters return episodes only; entity/edge promotion is a possible follow-up.
 
 Adapters are pure: they take foreign bytes/JSON and return ``list[PortableEpisode]``
 that a host then imports. There is no host, store, or I/O here.
@@ -86,6 +96,15 @@ def _as_object_list(value: Any) -> list[dict]:
     return []
 
 
+#: Top-level mem0 keys the mapping reads explicitly. Anything else is swept into
+#: ``mem0_<key>`` metadata so no field a mem0 version emits is ever dropped.
+_HANDLED_KEYS = frozenset({
+    "memory", "text", "data", "role", "user_id", "agent_id", "actor_id", "run_id",
+    "created_at", "updated_at", "metadata", "categories", "id", "hash",
+    "attributed_to", "expiration_date",
+})
+
+
 def _map_one(
     o: dict,
     parse: Callable[[Any], "datetime | None"],
@@ -103,6 +122,9 @@ def _map_one(
 
     created = parse(o.get("created_at")) or datetime.now(timezone.utc)
     updated = parse(o.get("updated_at"))
+    # mem0 normalizes expiration_date to date-only "YYYY-MM-DD"; the lenient parser
+    # accepts it (midnight UTC). The raw string is also preserved in metadata below.
+    expiration = parse(o.get("expiration_date"))
 
     # Actors in mem0's own precedence: user, then agent, then explicit actor. Only
     # non-empty ids are carried.
@@ -125,10 +147,19 @@ def _map_one(
         "mem0_run_id": run_id,
         "mem0_created_at": o.get("created_at"),
         "mem0_updated_at": o.get("updated_at"),
+        "mem0_attributed_to": o.get("attributed_to"),
+        "mem0_expiration_date": o.get("expiration_date"),
     }
     for k, v in provenance.items():
         if isinstance(v, str) and v:
             meta[k] = v
+    # Lossless sweep: any top-level key the mapping doesn't recognize (score, immutable,
+    # memory_type, future platform fields, ...) is preserved as mem0_<key>. Nulls are
+    # skipped — mem0 emits e.g. "expiration_date": null. setdefault so user metadata or
+    # provenance that already claimed a key is never overwritten.
+    for k, v in o.items():
+        if k not in _HANDLED_KEYS and v is not None:
+            meta.setdefault(f"mem0_{k}", _stringify(v))
 
     # Mirror Swift's `as? [String]`: a non-list (e.g. a bare string — which Python
     # would happily iterate char-by-char) or a list with non-string members maps to [].
@@ -165,7 +196,7 @@ def _map_one(
         last_accessed=None,
         access_count=0,
         pinned=False,
-        expiration_date=None,
+        expiration_date=expiration,
         vault_refs=[],
         # Only chat-shaped roles map to a speaker; a bare "role" like "system" does not.
         speaker=role if role in ("user", "assistant") else None,
