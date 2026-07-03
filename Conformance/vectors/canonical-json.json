@@ -1,0 +1,230 @@
+{
+  "description": "Portable Memory canonical-JSON conformance vectors (spec §1.1). For each entry, serializing `input` in Canonical JSON MUST equal `canonical` byte-for-byte, and sha256(utf8(canonical)) MUST equal `sha256`. Numbers in integer fields beyond 2^53 require a bigint-aware JSON parser. See README.md for scope and known residuals.",
+  "formatVersion": "1.0.0",
+  "vectors": [
+    {
+      "name": "number: whole-valued float -> integer",
+      "input": {
+        "a": 1.0
+      },
+      "canonical": "{\"a\":1}",
+      "sha256": "015abd7f5cc57a2dd94b7590f04ad8084273905ee33ec5cebeae62276a97f862"
+    },
+    {
+      "name": "number: whole-valued float 3.0 -> 3",
+      "input": {
+        "a": 3.0
+      },
+      "canonical": "{\"a\":3}",
+      "sha256": "70778ce01ad8d1a82c80a3500bee476f34651238edeb936c4a7b0161b1395169"
+    },
+    {
+      "name": "number: negative zero normalizes to 0",
+      "input": {
+        "a": -0.0
+      },
+      "canonical": "{\"a\":0}",
+      "sha256": "45b619e97b5d9b029af4522e9ffb02fa99ff2bf226c82ee22a7cc10269a557e8"
+    },
+    {
+      "name": "number: fractional shortest form 0.7",
+      "input": {
+        "a": 0.7
+      },
+      "canonical": "{\"a\":0.7}",
+      "sha256": "340e9352257b5d0ba5e1a1c6e7a9b33b268ee0ef612092ca93664a1ef62e75ad"
+    },
+    {
+      "name": "number: fractional shortest form 0.92",
+      "input": {
+        "a": 0.92
+      },
+      "canonical": "{\"a\":0.92}",
+      "sha256": "91c1a012e367f85c008f3c5ff0d2662267a41e61e0d9f6ccba572bc78b6176ce"
+    },
+    {
+      "name": "number: 0.1+0.2 shortest form",
+      "input": {
+        "a": 0.30000000000000004
+      },
+      "canonical": "{\"a\":0.30000000000000004}",
+      "sha256": "29e5dbf7117c7b85bd446837b66c63ef1020f8eb93226b77db3928ddf09aa353"
+    },
+    {
+      "name": "number: large integral double < 1e16 as digits",
+      "input": {
+        "a": 8000000000000000.0
+      },
+      "canonical": "{\"a\":8000000000000000}",
+      "sha256": "81223e6b5acd87361ea928fc9479d9e94a904552612317ad6cee9c26526c54aa"
+    },
+    {
+      "name": "number: 2^53 exact",
+      "input": {
+        "a": 9007199254740992.0
+      },
+      "canonical": "{\"a\":9007199254740992}",
+      "sha256": "65c07d758377f303542fde97a8fe78f29a66c1e062b8f80fed3106a6d106d88b"
+    },
+    {
+      "name": "number: plain integer",
+      "input": {
+        "a": 100
+      },
+      "canonical": "{\"a\":100}",
+      "sha256": "f0015e5829a1311e9b61ef10cb18c6e783cc512e3989d3679f7622425a244a72"
+    },
+    {
+      "name": "number: 2^53+1 integer exact",
+      "input": {
+        "a": 9007199254740993
+      },
+      "canonical": "{\"a\":9007199254740993}",
+      "sha256": "d509df67f639ccc7538a0e52d149de6b89e9a93e16d350095bb4478957f410ca"
+    },
+    {
+      "name": "number: Int64.max exact",
+      "input": {
+        "a": 9223372036854775807
+      },
+      "canonical": "{\"a\":9223372036854775807}",
+      "sha256": "021974e52361a6f3bb262708ffe3119c264ab5ac97fea3f20364fee4db92347c"
+    },
+    {
+      "name": "number: UInt64.max exact (bigint field)",
+      "input": {
+        "a": 18446744073709551615
+      },
+      "canonical": "{\"a\":18446744073709551615}",
+      "sha256": "f3b4dfb00c0a55d8e57770ccf818324775f24503a77e1db9aceca474bfa2e8f7"
+    },
+    {
+      "name": "number: mixed magnitudes",
+      "input": {
+        "a": 123.456,
+        "b": 0
+      },
+      "canonical": "{\"a\":123.456,\"b\":0}",
+      "sha256": "482cdf961946a893e5548a4f8b6fec11ec6f0d472c2cfaf87e12d42b52410851"
+    },
+    {
+      "name": "bool/null: preserved",
+      "input": {
+        "t": true,
+        "f": false,
+        "n": null
+      },
+      "canonical": "{\"f\":false,\"n\":null,\"t\":true}",
+      "sha256": "22e00dc2f7b01420f940fbdbfbdf34fa0667cc6500186495023ba37722cbd05e"
+    },
+    {
+      "name": "string: forward slash NOT escaped",
+      "input": {
+        "s": "a/b/c"
+      },
+      "canonical": "{\"s\":\"a/b/c\"}",
+      "sha256": "58fcba80c744fe6d3d50ec4944b3c0d6b63480b493dc8dcfef6c4556536494af"
+    },
+    {
+      "name": "string: non-ASCII emitted raw (not \\u)",
+      "input": {
+        "s": "café — 日本語 😀"
+      },
+      "canonical": "{\"s\":\"café — 日本語 😀\"}",
+      "sha256": "8081de58e34ee9e9fceb2d7a5943f4ed07622ffd5bad183ffea32e3e8815d8ae"
+    },
+    {
+      "name": "string: short escape forms for tab/newline/quote/backslash",
+      "input": {
+        "s": "x\ty\nz\"q\\w"
+      },
+      "canonical": "{\"s\":\"x\\ty\\nz\\\"q\\\\w\"}",
+      "sha256": "572b367cd88e5f46b45ea5fd95de48ce111d48e2aefcc45ad768d3b05d444a93"
+    },
+    {
+      "name": "string: control char < 0x20 -> lowercase \\u00xx",
+      "input": {
+        "s": "\u0001\u001f"
+      },
+      "canonical": "{\"s\":\"\\u0001\\u001f\"}",
+      "sha256": "38dc5e0128fedab8edba6b02f7f09663f16bfe0f1afb41a5774a29154732a6e0"
+    },
+    {
+      "name": "string: empty string value",
+      "input": {
+        "s": ""
+      },
+      "canonical": "{\"s\":\"\"}",
+      "sha256": "6f600f2520d1f84f59052fea1223d39ea8f79da21817fd1ca486770e17ddb1b8"
+    },
+    {
+      "name": "keys: sorted ascending (BMP)",
+      "input": {
+        "z": 1,
+        "a": 2,
+        "m": 3
+      },
+      "canonical": "{\"a\":2,\"m\":3,\"z\":1}",
+      "sha256": "ebba85cfdc0a724b6cc327ecc545faeb38b9fe02eca603b430eb872f5cf75370"
+    },
+    {
+      "name": "keys: digit < uppercase < lowercase by code point",
+      "input": {
+        "b": 1,
+        "B": 2,
+        "1": 3
+      },
+      "canonical": "{\"1\":3,\"B\":2,\"b\":1}",
+      "sha256": "4ff2c74085f67d5a0c28d8d7d4f5429db9a97af4a8e07c04877f2f69637db31e"
+    },
+    {
+      "name": "keys: sorted recursively in nested object",
+      "input": {
+        "z": {
+          "y": 1,
+          "x": 2
+        },
+        "a": 3
+      },
+      "canonical": "{\"a\":3,\"z\":{\"x\":2,\"y\":1}}",
+      "sha256": "8d4ec158025ac90e3962f423d3201b8e960ee4280830656f6e536587a1f00fe9"
+    },
+    {
+      "name": "array: element order preserved (NOT sorted)",
+      "input": {
+        "a": [
+          3,
+          1,
+          2
+        ]
+      },
+      "canonical": "{\"a\":[3,1,2]}",
+      "sha256": "d934227f5a9f29b31bd6a8ceed3213dd498a07ce32bdfa9ae2488de0c0ab68f1"
+    },
+    {
+      "name": "containers: empty object and array",
+      "input": {
+        "o": {},
+        "a": []
+      },
+      "canonical": "{\"a\":[],\"o\":{}}",
+      "sha256": "9bee7ebfc94b459dacb8cbc72cb2900e61f0aa42189df18329f84f92568f4f89"
+    },
+    {
+      "name": "top-level array",
+      "input": [
+        3,
+        1,
+        2
+      ],
+      "canonical": "[3,1,2]",
+      "sha256": "51bda7ab4e44726cde71fcb6e4b515357059bb6b6dd5146d1fc50f73f11678c6"
+    },
+    {
+      "name": "top-level empty object",
+      "input": {},
+      "canonical": "{}",
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    }
+  ]
+}

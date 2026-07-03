@@ -12,7 +12,7 @@ local file I/O synchronously, so this port is fully synchronous.
 from __future__ import annotations
 
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 
 from ._codec import to_line
 from .format import (
@@ -277,7 +277,9 @@ class BundleExporter:
             format=MemFormat.VERSION,
             generator=info.generator,
             conformance_level=level,
-            created_at=datetime.now(),
+            # Aware UTC — a naive datetime.now() is LOCAL time, and the codec would
+            # stamp it "Z" as-is, shifting createdAt by the machine's UTC offset.
+            created_at=datetime.now(timezone.utc),
             export_mode=mode,
             since=since,
             schema_version=info.schema_version,
