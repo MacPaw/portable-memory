@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use Portable Memory in your work, please cite the paper below."
+title: "Portable Memory — Python reference SDK"
+type: software
+license: MIT
+repository-code: "https://github.com/MacPaw/portable-memory"
+url: "https://research.macpaw.com/publications/portable-memory"
+authors:
+  - family-names: Kryvoblotskyi
+    given-names: Sergii
+  - family-names: Stulova
+    given-names: Nataliia
+  - family-names: Hamolia
+    given-names: Vladyslav
+preferred-citation:
+  type: generic
+  title: "Memory Belongs to the User: Portable Memory, an Open Standard Proposal for Cross-Vendor AI Memory"
+  authors:
+    - family-names: Kryvoblotskyi
+      given-names: Sergii
+    - family-names: Stulova
+      given-names: Nataliia
+    - family-names: Hamolia
+      given-names: Vladyslav
+  year: 2026
+  month: 7
+  url: "https://research.macpaw.com/publications/portable-memory"
+  notes: "Standards proposal — preprint for community review. MacPaw Research."
