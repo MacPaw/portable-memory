@@ -9,6 +9,8 @@ your-memory.mem/
   manifest.json     items/episode.jsonl     audit/tombstones.jsonl     CHECKSUMS
 ```
 
+> 📄 **Read the paper:** [*Memory Belongs to the User: Portable Memory, an Open Standard Proposal for Cross-Vendor AI Memory*](https://research.macpaw.com/publications/portable-memory) — the vision, the design, the evidence, and an open invitation to collaborate (MacPaw Research, 2026). See [Citation](#citation).
+
 > **This is the Python reference SDK.** The format itself is language-neutral (see [`Spec/`](Spec) + [`Schemas/`](Schemas)). Its sibling, the **Swift** reference SDK, lives at **[github.com/MacPaw/portable-memory-swift](https://github.com/MacPaw/portable-memory-swift)** — both implementations write byte-identical bundles and share the exact same on-disk format, spec, schemas, and conformance fixture.
 
 ---
@@ -196,6 +198,25 @@ They're complementary. MCP is a *runtime* protocol for connecting models to tool
 ## Contributing & governance
 
 Portable Memory is an open format **proposal**, not a finished standard — implementations in other languages, adapters, and spec feedback are exactly what it needs. See **[CONTRIBUTING](CONTRIBUTING.md)**, **[GOVERNANCE](GOVERNANCE.md)** (how it's stewarded and where it's headed), and **[SECURITY](SECURITY.md)**. For how this compares to mem0 / Letta / Zep / MCP and to GDPR data-portability efforts, see [spec §12 — Prior art](Spec/portable-memory-spec.md#12-prior-art--how-this-differs).
+
+## Citation
+
+If you use Portable Memory in research or products, please cite the paper
+([GitHub also picks this up](CITATION.cff) via “Cite this repository”):
+
+> Sergii Kryvoblotskyi, Nataliia Stulova, Vladyslav Hamolia. *Memory Belongs to the User: Portable Memory, an Open Standard Proposal for Cross-Vendor AI Memory.* MacPaw Research, July 2026. https://research.macpaw.com/publications/portable-memory
+
+```bibtex
+@misc{kryvoblotskyi-2026-portable-memory,
+  author = {Sergii Kryvoblotskyi and Nataliia Stulova and Vladyslav Hamolia},
+  title  = {Memory Belongs to the User: Portable Memory, an Open Standard
+            Proposal for Cross-Vendor AI Memory},
+  month  = {July},
+  year   = {2026},
+  note   = {Standards proposal — preprint for community review},
+  url    = {https://research.macpaw.com/publications/portable-memory}
+}
+```
 
 ## License
 

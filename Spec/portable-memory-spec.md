@@ -2,6 +2,7 @@
 
 > An open, vendor-neutral format for AI memory portability — proposed and stewarded in the open by MacPaw.
 > Status: **v1.0**. Reference SDKs: Swift (github.com/MacPaw/portable-memory-swift) and Python (github.com/MacPaw/portable-memory).
+> Paper: [Memory Belongs to the User: Portable Memory, an Open Standard Proposal for Cross-Vendor AI Memory](https://research.macpaw.com/publications/portable-memory) (MacPaw Research, 2026).
 
 **Goal.** Define an open, vendor-neutral format and protocol for carrying AI memory
 across apps, devices, and vendors — losslessly, locally, and **verifiably governed**.
