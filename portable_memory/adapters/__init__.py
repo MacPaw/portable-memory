@@ -10,13 +10,16 @@ adapter exposes ``parse_episodes(...)`` (input shape varies by source) returning
 * :class:`OpenAIAdapter` — the ChatGPT data export (``conversations.json``).
 * :class:`ClaudeAdapter` — Claude memory files (``MEMORY.md`` + topic files).
 * :class:`Mem0Adapter` — mem0 exports.
+* :class:`EngramAdapter` — Engram-spec (PLUR) ``engrams.yaml`` / ``episodes.yaml``; also
+  renders episodes back to spec-shaped YAML.
 """
 from __future__ import annotations
 
 from .claude import ClaudeAdapter
+from .engram import EngramAdapter
 from .mem0 import Mem0Adapter
 from .mem0 import parse_episodes  # back-compat: the bare name is the original mem0 adapter
 from .openai import OpenAIAdapter
 from .transfer import TransferTextAdapter
 
-__all__ = ["TransferTextAdapter", "Mem0Adapter", "OpenAIAdapter", "ClaudeAdapter", "parse_episodes"]
+__all__ = ["TransferTextAdapter", "EngramAdapter", "Mem0Adapter", "OpenAIAdapter", "ClaudeAdapter", "parse_episodes"]

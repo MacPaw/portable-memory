@@ -63,6 +63,11 @@ standard export prompt) and the exact `items/episode.jsonl` bytes both reference
 must derive from it. An implementation of the adapter in another language is parity-
 complete when it reproduces that file. See [`fixtures/transfer/README.md`](fixtures/transfer/README.md).
 
+`fixtures/engram/` does the same for the **Engram (PLUR) adapter**: the Engram
+Specification's own example, a PLUR pack-style file, and an `episodes.yaml`, with the exact
+`items/episode.jsonl` bytes *and* the exact `render_yaml` output both SDKs must produce. See
+[`fixtures/engram/README.md`](fixtures/engram/README.md).
+
 ## Vectors
 
 `vectors/` holds the language-neutral conformance oracle — `canonical-json.json`

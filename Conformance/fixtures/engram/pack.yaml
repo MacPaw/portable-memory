@@ -1,0 +1,45 @@
+# A pack-style file as PLUR's tooling writes it: wrapped `engrams:` root, comments between
+# items, folded statements, flow-style activation with a quoted date.
+engrams:
+  # === Portability ===
+
+  - id: ENG-PACK-PM-001
+    version: 2
+    status: active
+    type: procedural
+    scope: global
+    visibility: public
+    pinned: true
+    statement: >-
+      Before switching assistants, export memory to a .mem bundle and
+      validate it; import into the new assistant only after the
+      checksums verify.
+    rationale: >-
+      A verified bundle is the only proof that nothing was lost in transit.
+    domain: memory.portability
+    tags: [export, validate, import]
+    activation: { retrieval_strength: 0.95, storage_strength: 0.95, frequency: 0, last_accessed: "2026-05-04" }
+    dual_coding:
+      example: "User: 'move my memory to Claude'. Agent exports, validates, then imports."
+      analogy: "Like checking the moving boxes before the truck leaves."
+    pack: portable-memory-basics
+    polarity: do
+    commitment: locked
+
+  # === Deletion ===
+
+  - id: ENG-PACK-PM-002
+    version: 2
+    status: active
+    type: behavioral
+    scope: global
+    visibility: public
+    statement: >-
+      When the user asks to forget something, delete it AND every
+      artifact derived from it — embeddings, index entries, caches —
+      and record a tombstone. Don't just remove the row.
+    domain: memory.deletion
+    tags: [delete, tombstone, gdpr]
+    activation: { retrieval_strength: 0.9, storage_strength: 0.8, frequency: 3, last_accessed: "2026-05-06" }
+    pack: portable-memory-basics
+    polarity: dont

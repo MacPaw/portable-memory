@@ -1,0 +1,80 @@
+# Portable Memory — engram fixture (bare-list root, as in the Engram Specification v2.1).
+# The first entry is the specification's own example (PLUR, plur.ai/spec.html, Apache-2.0).
+- id: ENG-2026-0131-001
+  version: 2
+  status: active
+  type: behavioral
+  scope: agent:dip-preparer
+  visibility: private
+  polarity: do
+  statement: |
+    Validate org-mode syntax before writing to .org files.
+    Three incidents of malformed entries in January 2026 caused
+    data loss. Always parse and validate before write.
+  rationale: "Three incidents of malformed entries in January 2026."
+  contraindications: ["Quick scratch notes that won't be parsed"]
+  tags: [org-mode, validation]
+  domain: "gtd/org-mode"
+  activation:
+    retrieval_strength: 0.85
+    storage_strength: 0.6
+    frequency: 5
+    last_accessed: 2026-01-30
+  entities:
+    - name: org-mode
+      type: technology
+  temporal:
+    learned_at: 2026-01-31
+  episodic:
+    emotional_weight: 8
+    confidence: 9
+    trigger_context: "Data loss from malformed org entries"
+  usage:
+    injections: 12
+    hits: 8
+    misses: 4
+    last_hit_at: 2026-03-28
+  associations:
+    - target: "ENG-2026-0302-001"
+      strength: 0.8
+      type: semantic
+  source: "user/personal"
+  feedback_signals: {positive: 3, negative: 0, neutral: 2}
+
+- id: "ENG-2026-0302-001"
+  version: 2
+  status: candidate
+  type: terminological
+  scope: "space:portable-memory"
+  statement: "A .mem bundle is a directory of JSONL streams plus a manifest and CHECKSUMS; a tombstone is a portable deletion record."
+  tags:
+  - portable-memory
+  - vocabulary
+  temporal:
+    learned_at: 2026-03-02
+    valid_until: 2027-03-02
+  relations:
+    related: [ENG-2026-0131-001]
+  provenance:
+    origin: "session"
+    chain: []
+    signature: null
+    license: "MIT"
+
+- id: META-2026-0401-001
+  version: 2
+  status: dormant
+  type: architectural
+  scope: global
+  visibility: public
+  statement: >-
+    Memory that cannot be exported is not owned;
+    prefer stores whose contents round-trip through an open format.
+  rationale: >
+    Vendor lock-in through memory is the strongest lock-in in software.
+  domain: "memory/portability"
+  created_at: "2026-04-01T09:30:00Z"
+  updated_at: "2026-04-15T18:45:30+02:00"
+  activation: {retrieval_strength: 0.4, storage_strength: 1.0, frequency: 0, last_accessed: "2026-04-15"}
+  pinned: false
+  consolidated: true

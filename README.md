@@ -29,7 +29,7 @@ mem inspect  my-memory.mem          # what's inside
 mem render   my-memory.mem --fence  # paste-ready text for Claude's or Gemini's memory import
 ```
 
-Same text in, **byte-identical** bundle out — in Python *and* Swift ([`Conformance/fixtures/transfer/`](Conformance/fixtures/transfer) is the proof). Paste the same export twice and it merges instead of duplicating (ids are content-derived). Also: `mem ingest --from openai conversations.json` (the ChatGPT data export), `--from claude ~/.claude/memory` (memory files), `--from mem0 memories.json`.
+Same text in, **byte-identical** bundle out — in Python *and* Swift ([`Conformance/fixtures/transfer/`](Conformance/fixtures/transfer) is the proof). Paste the same export twice and it merges instead of duplicating (ids are content-derived). Also: `mem ingest --from openai conversations.json` (the ChatGPT data export), `--from claude ~/.claude/memory` (memory files), `--from mem0 memories.json`, and `--from engram ~/.plur` ([Engram-spec](https://plur.ai/spec.html) `engrams.yaml` / `episodes.yaml`, as PLUR writes them — and `mem render --as engram` writes them back, losslessly).
 
 > **This is the Python reference SDK.** The format itself is language-neutral (see [`Spec/`](Spec) + [`Schemas/`](Schemas)). Its sibling, the **Swift** reference SDK, lives at **[github.com/MacPaw/portable-memory-swift](https://github.com/MacPaw/portable-memory-swift)** — both implementations write byte-identical bundles and share the exact same on-disk format, spec, schemas, and conformance fixture.
 

@@ -1,0 +1,15 @@
+# PLUR episodes.yaml — append-only timestamped events (no activation model).
+- id: EP-2026-0201-001
+  timestamp: 2026-02-01T10:00:00Z
+  summary: Migrated the team's shared memory from mem0 to a .mem bundle; 412 episodes, checksums verified.
+  agent: claude-code
+  channel: terminal
+  session_id: sess-7f3a
+- id: EP-2026-0201-002
+  timestamp: "2026-02-01T18:30:00.250+02:00"
+  summary: |
+    Decided: tombstones are applied before additions on import.
+    Rationale: a stale bundle must never resurrect deleted content.
+  agent: hermes
+  channel: slack
+  session_id: sess-7f3a

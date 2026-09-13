@@ -6,7 +6,9 @@ Zero dependencies, works on the memory you can already get out of an assistant t
     mem ingest --from openai conversations.json --out my-memory.mem
     mem ingest --from claude  ~/.claude/memory --out my-memory.mem
     mem ingest --from mem0    memories.json --out my-memory.mem
+    mem ingest --from engram  ~/.plur --out my-memory.mem       # Engram-spec YAML (PLUR)
     mem render   my-memory.mem --fence      # .mem → paste-ready text for Claude/Gemini import
+    mem render   my-memory.mem --as engram  # .mem → engrams.yaml
     mem validate my-memory.mem              # checksums, structure, no injected files
     mem inspect  my-memory.mem              # manifest summary
 
@@ -23,6 +25,7 @@ from typing import Sequence
 from . import __version__
 from ._codec import format_timestamp
 from .adapters.claude import ClaudeAdapter
+from .adapters.engram import EngramAdapter
 from .adapters.mem0 import Mem0Adapter
 from .adapters.openai import OpenAIAdapter
 from .adapters.transfer import TransferTextAdapter
@@ -32,7 +35,8 @@ from .inmemory import InMemoryStore
 from .records import PortableEpisode
 from .validator import BundleValidator
 
-_FORMATS = ("transfer", "openai", "claude", "mem0")
+_FORMATS = ("transfer", "openai", "claude", "mem0", "engram")
+_ENGRAM_SUFFIXES = (".yaml", ".yml", ".json")
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -71,9 +75,12 @@ def _cmd_render(args: argparse.Namespace) -> int:
     store = InMemoryStore()
     BundleImporter().import_bundle(store, args.bundle, reembed=False)
     episodes = sorted(store.episodes.values(), key=lambda e: (e.event_time, e.id))
-    text = TransferTextAdapter.render_text(episodes, group_by_section=args.group)
-    if args.fence:
-        text = "```\n" + text + "```\n"
+    if args.render_as == "engram":
+        text = EngramAdapter.render_yaml(episodes, wrapped=args.wrapped)
+    else:
+        text = TransferTextAdapter.render_text(episodes, group_by_section=args.group)
+        if args.fence:
+            text = "```\n" + text + "```\n"
     sys.stdout.write(text)
     return 0
 
@@ -127,7 +134,28 @@ def _parse(source_format: str, path: str, source: str | None) -> list[PortableEp
         return Mem0Adapter.parse_episodes(_read_text(path))
     if source_format == "claude":
         return ClaudeAdapter.parse_episodes(_claude_files(path))
+    if source_format == "engram":
+        episodes: list[PortableEpisode] = []
+        for text in _engram_texts(path):
+            episodes.extend(EngramAdapter.parse_episodes(text))
+        return episodes
     raise ValueError(f"unknown --from format: {source_format}")
+
+
+def _engram_texts(path: str) -> list[str]:
+    """One YAML/JSON text per engram file: a single file, or every ``*.yaml`` / ``*.yml`` /
+    ``*.json`` under a directory (sorted, recursive — PLUR keeps ``engrams.yaml``,
+    ``engrams.private.yaml`` and ``episodes.yaml`` side by side)."""
+    if not os.path.isdir(path):
+        return [_read_text(path)]
+    files: list[str] = []
+    for root, _dirs, names in os.walk(path):
+        files.extend(os.path.join(root, n) for n in names if n.endswith(_ENGRAM_SUFFIXES))
+    texts: list[str] = []
+    for full in sorted(files):
+        with open(full, "r", encoding="utf-8") as fh:
+            texts.append(fh.read())
+    return texts
 
 
 def _read_text(path: str) -> str:
@@ -172,7 +200,8 @@ def _parser() -> argparse.ArgumentParser:
 
     ingest = sub.add_parser("ingest", help="a vendor export → .mem bundle")
     ingest.add_argument("--from", dest="source_format", required=True, choices=_FORMATS,
-                        help="transfer (pasted text), openai (conversations.json), claude (memory files dir), mem0 (json)")
+                        help="transfer (pasted text), openai (conversations.json), claude (memory files dir), "
+                             "mem0 (json), engram (Engram-spec YAML/JSON file or PLUR directory)")
     ingest.add_argument("input", help="file, directory (claude), or '-' for stdin")
     ingest.add_argument("--out", required=True, help="bundle directory to write")
     ingest.add_argument("--source", help="source label recorded on transfer-text entries")
@@ -180,8 +209,11 @@ def _parser() -> argparse.ArgumentParser:
 
     render = sub.add_parser("render", help=".mem bundle → paste-ready memory text")
     render.add_argument("bundle")
-    render.add_argument("--fence", action="store_true", help="wrap in a ``` code fence")
-    render.add_argument("--group", action="store_true", help="group entries under ## section headers")
+    render.add_argument("--as", dest="render_as", choices=("transfer", "engram"), default="transfer",
+                        help="transfer (default: [date] - memory text) or engram (Engram-spec engrams.yaml)")
+    render.add_argument("--fence", action="store_true", help="transfer: wrap in a ``` code fence")
+    render.add_argument("--group", action="store_true", help="transfer: group entries under ## section headers")
+    render.add_argument("--wrapped", action="store_true", help="engram: nest the list under an `engrams:` key (PLUR pack style)")
     render.set_defaults(func=_cmd_render)
 
     validate = sub.add_parser("validate", help="verify a bundle's integrity (L0)")

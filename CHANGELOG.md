@@ -23,6 +23,24 @@ independent of the on-disk **format** version (`format` in the manifest).
   library only.
 - **`InMemoryStore`** (`portable_memory/inmemory.py`) — a minimal public store for
   prototyping and the CLI; the shape an adopter's own store takes.
+- **`EngramAdapter`** (`portable_memory/adapters/engram.py`) — the
+  [Engram Specification](https://plur.ai/spec.html) (PLUR) in both directions:
+  `engrams.yaml` (bare-list or wrapped `engrams:` root, as PLUR's pack files are written)
+  and `episodes.yaml` → portable episodes, with `learned_at`/`created_at` → event time,
+  activation → `last_accessed`/`access_count`/`importance`, `episodic.confidence` →
+  confidence, tags → categories, scope → context id, `valid_until` → expiration, and
+  **every** top-level key preserved as `engram_*` metadata; `render_yaml` restores engrams
+  exactly (or synthesizes valid ones from plain episodes). Shared fixture
+  `Conformance/fixtures/engram/` (the spec's own example + PLUR pack style + episodes) pins
+  byte-identical parse *and* render output across both SDKs. CLI: `mem ingest --from
+  engram <file|dir>`, `mem render --as engram [--wrapped]`.
+- **Standard-library YAML subset reader** (`portable_memory/_yaml.py`) — block/flow
+  collections, block scalars with chomping, quoted/plain scalars typed by the YAML 1.2 core
+  schema, comments, multi-document streams; degrades to strings outside the subset and caps
+  nesting depth. Mirrored line-for-line in Swift.
+- **Tests:** YAML-subset unit tests, engram mapping/losslessness/render tests, and a
+  seeded fuzz suite (`tests/test_fuzz_robustness.py`) asserting the transfer-text, YAML and
+  engram parsers never raise, are deterministic, and round-trip.
 
 ### Fixed
 

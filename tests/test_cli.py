@@ -88,6 +88,31 @@ def test_missing_input_and_bad_bundle(tmp_path, capsys):
     assert main(["inspect", str(tmp_path / "not-a-bundle")]) == 1
 
 
+def test_ingest_engram_directory_and_render_engram(tmp_path, capsys):
+    from portable_memory._yaml import load_yaml
+    src = Path(__file__).resolve().parents[1] / "Conformance" / "fixtures" / "engram"
+    plur = tmp_path / ".plur"
+    plur.mkdir()
+    for name in ("engrams.yaml", "pack.yaml", "episodes.yaml"):
+        (plur / name).write_text((src / name).read_text(encoding="utf-8"), encoding="utf-8")
+    (plur / "notes.txt").write_text("ignored\n", encoding="utf-8")
+    out = tmp_path / "e.mem"
+    assert main(["ingest", "--from", "engram", str(plur), "--out", str(out)]) == 0
+    assert "7 episodes" in capsys.readouterr().out
+
+    assert main(["render", str(out), "--as", "engram"]) == 0
+    doc = load_yaml(capsys.readouterr().out)
+    assert {e["id"] for e in doc} == {"ENG-2026-0131-001", "ENG-2026-0302-001", "META-2026-0401-001",
+                                      "ENG-PACK-PM-001", "ENG-PACK-PM-002"}                # PLUR episodes excluded
+    assert main(["render", str(out), "--as", "engram", "--wrapped"]) == 0
+    assert capsys.readouterr().out.startswith("engrams:\n")
+
+    single = tmp_path / "one.yaml"
+    single.write_text("- id: X\n  statement: single file\n", encoding="utf-8")
+    assert main(["ingest", "--from", "engram", str(single), "--out", str(tmp_path / "s.mem")]) == 0
+    assert "1 episodes" in capsys.readouterr().out
+
+
 def test_version_and_no_command(capsys):
     with pytest.raises(SystemExit) as exc:
         main(["--version"])

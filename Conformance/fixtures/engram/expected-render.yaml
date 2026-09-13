@@ -1,0 +1,117 @@
+- id: "ENG-2026-0131-001"
+  version: 2
+  status: "active"
+  type: "behavioral"
+  scope: "agent:dip-preparer"
+  visibility: "private"
+  polarity: "do"
+  statement: |
+    Validate org-mode syntax before writing to .org files.
+    Three incidents of malformed entries in January 2026 caused
+    data loss. Always parse and validate before write.
+  rationale: "Three incidents of malformed entries in January 2026."
+  contraindications: ["Quick scratch notes that won't be parsed"]
+  tags: ["org-mode", "validation"]
+  domain: "gtd/org-mode"
+  activation:
+    frequency: 5
+    last_accessed: "2026-01-30"
+    retrieval_strength: 0.85
+    storage_strength: 0.6
+  entities:
+    - type: "technology"
+      name: "org-mode"
+  temporal:
+    learned_at: "2026-01-31"
+  episodic:
+    confidence: 9
+    emotional_weight: 8
+    trigger_context: "Data loss from malformed org entries"
+  usage:
+    hits: 8
+    injections: 12
+    last_hit_at: "2026-03-28"
+    misses: 4
+  associations:
+    - type: "semantic"
+      strength: 0.8
+      target: "ENG-2026-0302-001"
+  source: "user/personal"
+  feedback_signals:
+    negative: 0
+    neutral: 2
+    positive: 3
+- id: "ENG-2026-0302-001"
+  version: 2
+  status: "candidate"
+  type: "terminological"
+  scope: "space:portable-memory"
+  statement: "A .mem bundle is a directory of JSONL streams plus a manifest and CHECKSUMS; a tombstone is a portable deletion record."
+  tags: ["portable-memory", "vocabulary"]
+  temporal:
+    learned_at: "2026-03-02"
+    valid_until: "2027-03-02"
+  relations:
+    related: ["ENG-2026-0131-001"]
+  provenance:
+    chain: []
+    license: "MIT"
+    origin: "session"
+    signature: null
+- id: "META-2026-0401-001"
+  version: 2
+  status: "dormant"
+  type: "architectural"
+  scope: "global"
+  visibility: "public"
+  statement: "Memory that cannot be exported is not owned; prefer stores whose contents round-trip through an open format."
+  rationale: |
+    Vendor lock-in through memory is the strongest lock-in in software.
+  domain: "memory/portability"
+  consolidated: true
+  pinned: false
+  activation:
+    frequency: 0
+    last_accessed: "2026-04-15"
+    retrieval_strength: 0.4
+    storage_strength: 1
+  created_at: "2026-04-01T09:30:00Z"
+  updated_at: "2026-04-15T18:45:30+02:00"
+- id: "ENG-PACK-PM-001"
+  version: 2
+  status: "active"
+  type: "procedural"
+  scope: "global"
+  visibility: "public"
+  polarity: "do"
+  statement: "Before switching assistants, export memory to a .mem bundle and validate it; import into the new assistant only after the checksums verify."
+  rationale: "A verified bundle is the only proof that nothing was lost in transit."
+  tags: ["export", "validate", "import"]
+  domain: "memory.portability"
+  pinned: true
+  activation:
+    frequency: 0
+    last_accessed: "2026-05-04"
+    retrieval_strength: 0.95
+    storage_strength: 0.95
+  dual_coding:
+    analogy: "Like checking the moving boxes before the truck leaves."
+    example: "User: 'move my memory to Claude'. Agent exports, validates, then imports."
+  pack: "portable-memory-basics"
+  commitment: "locked"
+- id: "ENG-PACK-PM-002"
+  version: 2
+  status: "active"
+  type: "behavioral"
+  scope: "global"
+  visibility: "public"
+  polarity: "dont"
+  statement: "When the user asks to forget something, delete it AND every artifact derived from it — embeddings, index entries, caches — and record a tombstone. Don't just remove the row."
+  tags: ["delete", "tombstone", "gdpr"]
+  domain: "memory.deletion"
+  activation:
+    frequency: 3
+    last_accessed: "2026-05-06"
+    retrieval_strength: 0.9
+    storage_strength: 0.8
+  pack: "portable-memory-basics"
