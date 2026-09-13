@@ -11,6 +11,26 @@ your-memory.mem/
 
 > 📄 **Read the paper:** [*Memory Belongs to the User: Portable Memory, an Open Standard Proposal for Cross-Vendor AI Memory*](https://research.macpaw.com/publications/portable-memory) — the vision, the design, the evidence, and an open invitation to collaborate (MacPaw Research, 2026). See [Citation](#citation).
 
+## Try it in 60 seconds
+
+Your AI memory is already portable enough to *paste*: every assistant now hands you a prompt that dumps it as text (Claude's and Gemini's import pages give you the standard one — *"Format each entry as: [date saved, if available] - memory content"*). Portable Memory turns that lossy text into something you can keep, verify, merge, and delete:
+
+![mem paste → validate → render: the pasted memory text becomes a verifiable .mem bundle and back](docs/demo.gif)
+
+```bash
+pip install portable-memory
+
+# 1. Run the standard memory-export prompt in ChatGPT (or Claude, Gemini, Grok…) and save the
+#    code block it returns as export.txt. Then:
+mem paste export.txt --out my-memory.mem --source chatgpt
+
+mem validate my-memory.mem          # checksums, structure, nothing injected
+mem inspect  my-memory.mem          # what's inside
+mem render   my-memory.mem --fence  # paste-ready text for Claude's or Gemini's memory import
+```
+
+Same text in, **byte-identical** bundle out — in Python *and* Swift ([`Conformance/fixtures/transfer/`](Conformance/fixtures/transfer) is the proof). Paste the same export twice and it merges instead of duplicating (ids are content-derived). Also: `mem ingest --from openai conversations.json` (the ChatGPT data export), `--from claude ~/.claude/memory` (memory files), `--from mem0 memories.json`.
+
 > **This is the Python reference SDK.** The format itself is language-neutral (see [`Spec/`](Spec) + [`Schemas/`](Schemas)). Its sibling, the **Swift** reference SDK, lives at **[github.com/MacPaw/portable-memory-swift](https://github.com/MacPaw/portable-memory-swift)** — both implementations write byte-identical bundles and share the exact same on-disk format, spec, schemas, and conformance fixture.
 
 ---

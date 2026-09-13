@@ -57,6 +57,12 @@ completed by an adopter against its own retrieval stack.
 edge, an episode carrying a foreign `ext` field, a vendor-specific passthrough kind,
 and a tombstone (with proof-of-reach). Use it to test your importer and validator.
 
+`fixtures/transfer/` pins the **memory-transfer text** adapter: a realistic pasted
+export (`sample-export.txt`, the `[date] - memory` code block assistants produce for the
+standard export prompt) and the exact `items/episode.jsonl` bytes both reference SDKs
+must derive from it. An implementation of the adapter in another language is parity-
+complete when it reproduces that file. See [`fixtures/transfer/README.md`](fixtures/transfer/README.md).
+
 ## Vectors
 
 `vectors/` holds the language-neutral conformance oracle — `canonical-json.json`

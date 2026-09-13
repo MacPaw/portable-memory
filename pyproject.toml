@@ -33,6 +33,10 @@ dependencies = []
 signing = ["cryptography>=41"]
 dev = ["pytest>=7", "jsonschema>=4", "cryptography>=41"]
 
+[project.scripts]
+mem = "portable_memory.cli:main"
+portable-memory = "portable_memory.cli:main"
+
 [project.urls]
 Homepage = "https://github.com/MacPaw/portable-memory"
 Paper = "https://research.macpaw.com/publications/portable-memory"
