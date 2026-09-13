@@ -6,6 +6,29 @@ independent of the on-disk **format** version (`format` in the manifest).
 
 ## [Unreleased]
 
+### Added
+
+- **`TransferTextAdapter`** (`portable_memory/adapters/transfer.py`) — parses the pasted
+  memory-transfer text that ChatGPT, Claude, and Gemini exchange today (the standard
+  export prompt's `[date saved, if available] - memory content` entries in a code block;
+  tolerant of `-`/`–`/`—`/`:` separators, bullets and numbering, section headers, bare ISO
+  dates, month-name dates, indented continuation lines, and plain prose summaries) into
+  **deterministic, deduplicated** episodes with the date, section, and line preserved
+  verbatim in `transfer_*` metadata — and renders any episodes back into paste-ready text
+  (`render_text`). The shared fixture `Conformance/fixtures/transfer/` pins byte-identical
+  output across both reference SDKs.
+- **`mem` command line** (`[project.scripts]`, also `portable-memory`): `mem paste
+  export.txt --out my.mem`, `mem ingest --from openai|claude|mem0|transfer`, `mem render
+  my.mem [--fence] [--group]`, `mem validate my.mem`, `mem inspect my.mem`. Standard
+  library only.
+- **`InMemoryStore`** (`portable_memory/inmemory.py`) — a minimal public store for
+  prototyping and the CLI; the shape an adopter's own store takes.
+
+### Fixed
+
+- `portable_memory.__version__` had drifted to `0.1.0`; it now tracks `pyproject.toml`
+  and a test enforces it.
+
 ## [0.1.2] - 2026-09-13
 
 First release published to PyPI: `pip install portable-memory`.

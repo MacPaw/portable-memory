@@ -47,10 +47,11 @@ from .records import (
 )
 from .tombstone import DerivedRefs, PortableAuditRecord, Tombstone, TombstoneOp
 
-__version__ = "0.1.0"
+__version__ = "0.1.2"
 
 # Logic modules.
 from .store import PortableMemoryStore, StoreInfo  # noqa: E402
+from .inmemory import InMemoryStore  # noqa: E402
 from .signing import (  # noqa: E402
     PortableSigning,
     PortableSigningKey,
@@ -71,7 +72,7 @@ __all__ = [
     "PortableProcedure", "PortableContext", "PortableCommunity", "PortableCategory",
     "PortablePreference", "PortableSecretRef", "MemImportReport",
     "DerivedRefs", "TombstoneOp", "Tombstone", "PortableAuditRecord",
-    "PortableMemoryStore", "StoreInfo",
+    "PortableMemoryStore", "StoreInfo", "InMemoryStore",
     "PortableSigning", "PortableSigningKey", "PortableVerifyingKey",
     "BundleValidator", "ValidationResult",
     "BundleExporter", "BundleImporter", "MemImportError",

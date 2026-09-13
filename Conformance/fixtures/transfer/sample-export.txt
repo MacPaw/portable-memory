@@ -1,0 +1,23 @@
+Sure — here is everything I have stored about you, exactly as saved:
+
+```
+[2025-11-03] - Prefers concise answers: code first, explanation second.
+[2025-11-03] – Works as Director of AI & Research at a Mac software company.
+[2026-01-15] — Leads "Portable Memory", an open standard for carrying AI memory between vendors (.mem bundles).
+[Jan 2026] - Uses Swift and Python; likes pure-stdlib Python and Swift 6 strict concurrency.
+[date unknown] - Lives in Київ (Kyiv); timezone Europe/Kyiv.
+- Prefers metric units and 24-hour time.
+1. Has a dog named Bit.
+2026-02-02 - Started learning Rust for a side project.
+
+## Communication preferences
+Tone: direct, no filler, no emoji.
+  Exception: emoji are fine in casual chats.
+[2025-12-20] - Wants answers in English, even when asked in Ukrainian.
+
+INSTRUCTIONS
+[2026-03-01] - Always show the command to run before explaining it.
+[2025-11-03] - Prefers concise answers: code first, explanation second.
+```
+
+That is the complete set — nothing else is stored.
