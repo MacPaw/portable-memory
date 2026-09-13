@@ -1,0 +1,65 @@
+name: Publish to PyPI
+
+# Publishes the package when a GitHub release is published (tag == pyproject version).
+# Uses PyPI Trusted Publishing (OIDC) — no API token is stored anywhere. One-time setup on
+# pypi.org: project "portable-memory" → Publishing → add a GitHub publisher with
+# owner "MacPaw", repository "portable-memory", workflow "publish.yml", environment "pypi".
+# (For the very first release, register it as a *pending* publisher under your account.)
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build sdist and wheel
+        run: |
+          python -m pip install --upgrade pip build twine
+          python -m build
+          python -m twine check dist/*
+
+      - name: Verify the package version matches the release tag
+        if: github.event_name == 'release'
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          VER="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')"
+          if [ "$TAG" != "$VER" ]; then
+            echo "::error::release tag '$TAG' does not match pyproject version '$VER'"
+            exit 1
+          fi
+
+      - name: Smoke-test the built wheel
+        run: |
+          python -m venv /tmp/smoke && /tmp/smoke/bin/pip install -q dist/*.whl
+          /tmp/smoke/bin/python -c "import portable_memory, portable_memory.adapters; print('portable_memory', portable_memory.__version__ if hasattr(portable_memory, '__version__') else 'ok')"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write  # OIDC token for Trusted Publishing
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
