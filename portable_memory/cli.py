@@ -63,7 +63,9 @@ def _cmd_ingest(args: argparse.Namespace) -> int:
     for e in episodes:
         store.import_episode(e, None)
     manifest = BundleExporter().export(store, args.out)
-    print(f"wrote {args.out}: {len(episodes)} episodes in {len(manifest.files)} files")
+    merged = len(episodes) - len(store.episodes)   # repeated ids (e.g. the same entry in two files) merge
+    print(f"wrote {args.out}: {len(store.episodes)} episodes in {len(manifest.files)} files"
+          + (f" ({merged} duplicate ids merged)" if merged else ""))
     for f in manifest.files:
         print(f"  {f.sha256[:16]}…  {f.path}  ({f.bytes} bytes)")
     if not episodes:
