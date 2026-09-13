@@ -15,6 +15,8 @@ your-memory.mem/
 
 Your AI memory is already portable enough to *paste*: every assistant now hands you a prompt that dumps it as text (Claude's and Gemini's import pages give you the standard one — *"Format each entry as: [date saved, if available] - memory content"*). Portable Memory turns that lossy text into something you can keep, verify, merge, and delete:
 
+![mem paste → validate → render: the pasted memory text becomes a verifiable .mem bundle and back](docs/demo.gif)
+
 ```bash
 pip install portable-memory
 
