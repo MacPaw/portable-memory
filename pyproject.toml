@@ -4,21 +4,26 @@ build-backend = "hatchling.build"
 
 [project]
 name = "portable-memory"
-version = "0.1.0"
-description = "An open, vendor-neutral format for AI memory portability — Python reference SDK."
+version = "0.1.2"
+description = "Portable Memory — open, vendor-neutral .mem format for AI memory. Export, import/merge, verify, and provably delete AI memory across vendors (Python reference SDK)."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 authors = [{ name = "MacPaw" }]
-keywords = ["ai-memory", "memory-portability", "interoperability", "gdpr", "local-first"]
+keywords = [
+    "portable-memory", "ai-memory", "memory-portability", "interoperability", "gdpr",
+    "local-first", "llm", "ai-agents", "mcp", "data-portability", "verifiable-deletion",
+]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Software Development :: Libraries",
 ]
 # Core is pure standard library (json, hashlib, dataclasses). Signing is optional.
@@ -30,7 +35,10 @@ dev = ["pytest>=7", "jsonschema>=4", "cryptography>=41"]
 
 [project.urls]
 Homepage = "https://github.com/MacPaw/portable-memory"
+Paper = "https://research.macpaw.com/publications/portable-memory"
 Specification = "https://github.com/MacPaw/portable-memory/blob/main/Spec/portable-memory-spec.md"
+Changelog = "https://github.com/MacPaw/portable-memory/blob/main/CHANGELOG.md"
+Issues = "https://github.com/MacPaw/portable-memory/issues"
 "Swift SDK" = "https://github.com/MacPaw/portable-memory-swift"
 
 [tool.hatch.build.targets.wheel]
