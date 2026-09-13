@@ -6,8 +6,15 @@ independent of the on-disk **format** version (`format` in the manifest).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-09-14
+
+`pip install portable-memory` now installs the **`mem` command line** — paste an
+assistant's memory export, get a verifiable `.mem` bundle, render it back for import
+anywhere. (0.1.2 shipped the SDK only.)
+
 ### Added
 
+- **README "Try it in 60 seconds"** with a demo GIF of the paste → validate → render flow.
 - **`TransferTextAdapter`** (`portable_memory/adapters/transfer.py`) — parses the pasted
   memory-transfer text that ChatGPT, Claude, and Gemini exchange today (the standard
   export prompt's `[date saved, if available] - memory content` entries in a code block;
@@ -26,8 +33,8 @@ independent of the on-disk **format** version (`format` in the manifest).
 
 ### Fixed
 
-- `portable_memory.__version__` had drifted to `0.1.0`; it now tracks `pyproject.toml`
-  and a test enforces it.
+- `portable_memory.__version__` had drifted to `0.1.0` (the 0.1.2 wheel reports it); it
+  now tracks `pyproject.toml` and a test enforces it.
 
 ## [0.1.2] - 2026-09-13
 
@@ -88,6 +95,7 @@ to match the Swift SDK's release of the same day.
 - **Untrusted-input hardening** — path-traversal + symlink-escape rejection, unlisted-file
   rejection, and a per-file size bound (`MemLimits`).
 
-[Unreleased]: https://github.com/MacPaw/portable-memory/compare/0.1.2...HEAD
+[Unreleased]: https://github.com/MacPaw/portable-memory/compare/0.2.0...HEAD
+[0.2.0]: https://github.com/MacPaw/portable-memory/compare/0.1.2...0.2.0
 [0.1.2]: https://github.com/MacPaw/portable-memory/compare/0.1.1...0.1.2
 [0.1.1]: https://github.com/MacPaw/portable-memory/releases/tag/0.1.1
