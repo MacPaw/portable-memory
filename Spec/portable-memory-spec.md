@@ -1,7 +1,7 @@
-# Portable Memory — Specification v1.0
+# Portable Memory — Specification v1.1
 
 > An open, vendor-neutral format for AI memory portability — proposed and stewarded in the open by MacPaw.
-> Status: **v1.0**. Reference SDKs: Swift (github.com/MacPaw/portable-memory-swift) and Python (github.com/MacPaw/portable-memory).
+> Status: **v1.1** (format `1.1.0`; 1.0 bundles remain valid). Reference SDKs: Swift (github.com/MacPaw/portable-memory-swift) and Python (github.com/MacPaw/portable-memory).
 > Paper: [Memory Belongs to the User: Portable Memory, an Open Standard Proposal for Cross-Vendor AI Memory](https://research.macpaw.com/publications/portable-memory) (MacPaw Research, 2026).
 
 **Goal.** Define an open, vendor-neutral format and protocol for carrying AI memory
@@ -221,24 +221,51 @@ is. Embeddings are an optional accelerator.
 
 ```jsonc
 {
-  "format": "1.0.0",
+  "format": "1.1.0",
+  "specURL": "https://github.com/MacPaw/portable-memory/blob/main/Spec/portable-memory-spec.md",
   "generator": "your-app/1.0",
   "conformanceLevel": "L2",
   "createdAt": "2026-06-30T00:00:00Z",
   "exportMode": "full",            // or "incremental" with "since"
+  "coverage": { "from": "2024-01-03T09:12:00Z", "to": "2026-06-29T18:20:00Z" },  // earliest/latest episode eventTime
+  "scopes": ["ctx_personal", "ctx_team-platform"],                                 // context ids the records reference
   "schemaVersion": 12,
   "embeddingModel": "bge-m3",
   "embeddingDim": 1024,
   "embeddingsIncluded": false,     // false ⇒ receiver re-embeds from source text
   "capabilities": ["bitemporal", "tombstones", "redaction", "evidence-pack"],
   "counts": { "episode": 128, "edge": 64, "tombstone": 3 },
-  "files": [ { "path": "items/episode.jsonl", "sha256": "…", "bytes": 40213 } ]
+  "files": [ { "path": "items/episode.jsonl", "sha256": "…", "bytes": 40213 } ],
+  "bundleDigest": "…"              // sha256 of the CHECKSUMS file — one hash for the whole archive
 }
 ```
 
 `format` is semver. `capabilities` declares optional features. Importers negotiate by
 capability and **preserve unknown kinds verbatim** + **foreign episode fields via
 `ext`** on round-trip (§10), so a newer or other-vendor bundle never loses data here.
+
+### 3.1 Format 1.1 additions (normative)
+
+Format `1.1.0` adds four **optional** manifest fields so a bundle answers "what does
+this archive cover, in which scopes, and is it whole?" without opening a stream — the
+questions a procurement or erasure audit asks first. A producer at format ≥ 1.1 SHOULD
+emit them; a reader MUST accept their absence (every 1.0 bundle is a valid 1.1 bundle).
+
+- **`specURL`** — the URL of the specification the bundle follows.
+- **`coverage`** — `{ "from", "to" }`: the earliest and latest `eventTime` among the
+  episodes in the bundle (RFC 3339, whole-second UTC). Omitted when the bundle carries
+  no episodes. For an incremental export it describes the episodes *in this bundle*, not
+  the source store.
+- **`scopes`** — the sorted (by Unicode code point), de-duplicated set of scope
+  identifiers the exported records reference: every episode `contextID` plus the `id`
+  of every exported `context` record. Omitted when empty. Scopes are how a host expresses
+  org / team / personal partitioning (§2); a reader can enumerate them before import.
+- **`bundleDigest`** — the lowercase-hex SHA-256 of the exact bytes of `CHECKSUMS`
+  (§1.2). Because `CHECKSUMS` lists every data file's digest, this is a single hash for
+  the whole archive; a validator that finds it present MUST recompute it from the
+  on-disk `CHECKSUMS` and report a mismatch as an integrity failure. It complements —
+  not replaces — the optional manifest signature (§1.3), which is what makes the hash
+  *authentic* rather than merely *consistent*.
 
 ---
 
@@ -397,6 +424,9 @@ tombstones* is a real, testable feature — not an aspiration.
 
 ## 9. Versioning & capability negotiation
 
+- **Format history** — `1.0.0` (2026-06): initial release. `1.1.0` (2026-09): adds the
+  optional manifest fields `specURL`, `coverage`, `scopes`, `bundleDigest` (§3.1). A
+  minor bump: 1.0 readers ignore the new fields; 1.1 readers accept their absence.
 - `format` is semver in the manifest. `capabilities[]` declares features (e.g.
   `bitemporal`, `tombstones`, `redaction`, `evidence-pack`, `embeddings:<model>`).
 - Importers negotiate by capability and **preserve unknown kinds verbatim** and
