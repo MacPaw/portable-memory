@@ -131,3 +131,67 @@ def test_manifest_matches_json_schema(tmp_path):
     BundleExporter().export(_store(), out)
     schema = json.loads((ROOT / "Schemas" / "manifest.schema.json").read_text(encoding="utf-8"))
     jsonschema.Draft202012Validator(schema).validate(json.loads((out / "manifest.json").read_bytes()))
+
+
+def test_evidence_pack_manifest_carries_digest(tmp_path):
+    out = tmp_path / "ev.mem"
+    m = BundleExporter().export_evidence_pack(_store(), out)
+    assert m.spec_url == MemFormat.SPEC_URL
+    assert m.bundle_digest == sha256_hex((out / "CHECKSUMS").read_bytes())
+    assert m.coverage is None and m.scopes is None                 # an evidence pack carries no episodes
+
+
+def test_incremental_scopes_union_delta_episodes_with_all_contexts(tmp_path):
+    s = ScopedStore()
+    old, new = TransferTextAdapter.parse_episodes("[2024-01-01] - old\n[2026-06-01] - new\n", now=FIXED)
+    old.ingestion_time, old.context_id = utc(2024, 1, 2), "ctx_old"
+    new.ingestion_time, new.context_id = utc(2026, 6, 2), "ctx_new"
+    s.import_episode(old, None)
+    s.import_episode(new, None)
+    s.contexts.append(PortableContext(id="ctx_always", label="Always", archived=False, created_at=FIXED, parent_id=None))
+    m = BundleExporter().export(s, tmp_path / "i.mem", mode=ExportMode.INCREMENTAL, since=utc(2025, 1, 1))
+    assert m.scopes == ["ctx_always", "ctx_new"]                     # delta episodes only; contexts are always emitted in full
+
+
+def test_forward_compat_unknown_manifest_keys_are_ignored(tmp_path):
+    """A future (1.2) bundle may carry manifest keys this reader has never heard of."""
+    out = tmp_path / "fwd.mem"
+    BundleExporter().export(_store(), out)
+    manifest = json.loads((out / "manifest.json").read_bytes())
+    manifest["futureField"] = {"x": 1}
+    manifest["visibility"] = {"private": 3}
+    (out / "manifest.json").write_text(json.dumps(manifest, sort_keys=True), encoding="utf-8")
+    res = BundleValidator().validate(out)
+    assert res.ok, res.issues
+    assert res.manifest.bundle_digest == manifest["bundleDigest"]
+    store = InMemoryStore()
+    BundleImporter().import_bundle(store, out, reembed=False)
+    assert len(store.episodes) == 11
+
+
+def test_coverage_and_scopes_properties_random(tmp_path):
+    """coverage == (min, max) eventTime; scopes == sorted unique context ids; digest == sha256(CHECKSUMS)."""
+    import random
+    rng = random.Random(20260914)
+    pool = ["ctx_a", "ctx_b", "ctx_c", "ctx_д"]                      # a non-ASCII id exercises code-point ordering
+    for rnd in range(25):
+        s = ScopedStore()
+        k = rng.randint(1, 9)
+        text = "".join(f"[{rng.randint(2000, 2030):04d}-{rng.randint(1, 12):02d}-{rng.randint(1, 28):02d}] - m{rnd}-{i}\n" for i in range(k))
+        eps = TransferTextAdapter.parse_episodes(text, now=FIXED)
+        expected_ids: set[str] = set()
+        for e in eps:
+            if rng.random() < 0.5:
+                e.context_id = rng.choice(pool)
+                expected_ids.add(e.context_id)
+            s.import_episode(e, None)
+        if rng.random() < 0.5:
+            s.contexts.append(PortableContext(id="ctx_only", label="L", archived=False, created_at=FIXED, parent_id=None))
+            expected_ids.add("ctx_only")
+        out = tmp_path / f"p{rnd}.mem"
+        m = BundleExporter().export(s, out)
+        times = [e.event_time for e in eps]
+        assert (m.coverage.from_, m.coverage.to) == (min(times), max(times))
+        assert m.scopes == (sorted(expected_ids) or None)
+        assert m.bundle_digest == sha256_hex((out / "CHECKSUMS").read_bytes())
+        assert BundleValidator().validate(out).ok

@@ -105,6 +105,15 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
     print(f"conformance: {m.conformance_level.value}")
     print(f"created:     {format_timestamp(m.created_at)}")
     print(f"mode:        {m.export_mode.value}" + (f" since {format_timestamp(m.since)}" if m.since else ""))
+    # Format 1.1 summaries — what the archive covers, in which scopes, and its one-line digest.
+    if m.spec_url:
+        print(f"spec:        {m.spec_url}")
+    if m.coverage is not None:
+        print(f"coverage:    {format_timestamp(m.coverage.from_)} → {format_timestamp(m.coverage.to)}")
+    if m.scopes:
+        print("scopes:      " + ", ".join(m.scopes))
+    if m.bundle_digest:
+        print(f"digest:      {m.bundle_digest}")
     print(f"integrity:   {'OK' if result.ok else 'ISSUES (' + str(len(result.issues)) + ')'}")
     counts = {k: v for k, v in sorted(m.counts.items()) if v}
     print("counts:      " + (", ".join(f"{k}: {v}" for k, v in counts.items()) or "(empty)"))
