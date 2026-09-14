@@ -6,6 +6,20 @@ independent of the on-disk **format** version (`format` in the manifest).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-09-14
+
+Format **1.1.0**: the manifest now says what the archive covers, in which scopes, and
+carries a single archive digest — and `mem inspect` shows it. Every 1.0 bundle remains
+valid.
+
+### Specification
+
+- Specification **v1.1**: §3.1 *Format 1.1 additions* and §9 *format history*; §2 and §10
+  now state plainly which layers are not yet normative.
+- **RFC-0001** *Scopes & visibility* (#11), **RFC-0002** *`ext` for all kinds* (#13) and
+  **RFC-0003** *Provenance typing* (#14) opened for comment in `Spec/rfcs/` — target format
+  1.2, comment period to 2026-10-05.
+
 ### Added
 
 - **Format 1.1.0** — the manifest gains four optional fields (spec §3.1): `specURL`,
@@ -110,7 +124,8 @@ to match the Swift SDK's release of the same day.
 - **Untrusted-input hardening** — path-traversal + symlink-escape rejection, unlisted-file
   rejection, and a per-file size bound (`MemLimits`).
 
-[Unreleased]: https://github.com/MacPaw/portable-memory/compare/0.2.0...HEAD
+[Unreleased]: https://github.com/MacPaw/portable-memory/compare/0.3.0...HEAD
+[0.3.0]: https://github.com/MacPaw/portable-memory/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/MacPaw/portable-memory/compare/0.1.2...0.2.0
 [0.1.2]: https://github.com/MacPaw/portable-memory/compare/0.1.1...0.1.2
 [0.1.1]: https://github.com/MacPaw/portable-memory/releases/tag/0.1.1
