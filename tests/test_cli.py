@@ -94,3 +94,22 @@ def test_version_and_no_command(capsys):
     assert exc.value.code == 0
     assert capsys.readouterr().out.startswith("portable-memory ")
     assert main([]) == 2
+
+
+def test_inspect_shows_format_1_1_fields_and_validate_catches_digest_tamper(tmp_path, capsys):
+    import shutil
+    fixture = Path(__file__).resolve().parents[1] / "Conformance" / "fixtures" / "sample-1.1.mem"
+    assert main(["inspect", str(fixture)]) == 0
+    o = capsys.readouterr().out
+    assert "format:      1.1.0" in o
+    assert "spec:        https://github.com/MacPaw/portable-memory/blob/main/Spec/portable-memory-spec.md" in o
+    assert "coverage:    2023-11-14T22:13:20Z → 2026-03-01T00:00:00Z" in o
+    assert "scopes:      ctx_comms, ctx_instructions, ctx_root" in o
+    assert "digest:      d9b8b8899dec2e16" in o and "integrity:   OK" in o
+
+    out = tmp_path / "c.mem"
+    shutil.copytree(fixture, out)
+    with open(out / "CHECKSUMS", "ab") as fh:
+        fh.write(b"0" * 64 + b"  items/evil.jsonl\n")
+    assert main(["validate", str(out)]) == 1
+    assert "bundleDigest mismatch" in capsys.readouterr().err

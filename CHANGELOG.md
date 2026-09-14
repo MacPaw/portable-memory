@@ -15,6 +15,11 @@ independent of the on-disk **format** version (`format` in the manifest).
   recomputes `bundleDigest` when present. 1.0 bundles remain valid — the shipped 1.0
   fixtures double as backward-compatibility tests. `MemCoverage` is exported from the
   package.
+- **`mem inspect`** prints the 1.1 summaries — spec URL, coverage, scopes, archive digest.
+- **`Conformance/fixtures/sample-1.1.mem`** — a format-1.1 cross-SDK fixture (Python-written;
+  both SDKs validate it, recompute its `bundleDigest`, import it, and re-export
+  byte-identical streams). Tests: evidence-pack digest, incremental `scopes`, forward
+  compatibility with unknown manifest keys, seeded coverage/scopes property tests.
 
 ## [0.2.0] - 2026-09-14
 

@@ -63,6 +63,13 @@ standard export prompt) and the exact `items/episode.jsonl` bytes both reference
 must derive from it. An implementation of the adapter in another language is parity-
 complete when it reproduces that file. See [`fixtures/transfer/README.md`](fixtures/transfer/README.md).
 
+`fixtures/sample-1.1.mem/` is a **format 1.1** bundle written by the Python SDK: every 1.1
+manifest field is present (`specURL`, `coverage`, `scopes`, `bundleDigest`) and three
+scoped `context` records exercise the `scopes` union. Both SDKs validate it — recomputing
+the digest the other SDK wrote — import it, and re-export byte-identical streams and
+`CHECKSUMS`. `fixtures/sample.mem/` stays at format 1.0 as the backward-compatibility
+fixture. Regenerate with `fixtures/generate_sample_1_1.py`.
+
 ## Vectors
 
 `vectors/` holds the language-neutral conformance oracle — `canonical-json.json`
