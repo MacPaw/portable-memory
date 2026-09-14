@@ -198,7 +198,9 @@ Vendors **may** add kinds; unknown kinds round-trip verbatim.
   information loss.
 - **Provenance** — edges carry `evidenceEpisodeIDs`; facts carry `episodeID`. Every
   derived assertion ties back to the episodes that justify it. Required for the
-  Evidence Pack (§7).
+  Evidence Pack (§7). *Typed* provenance — how a claim came to be (asserted / observed /
+  inferred / merged / imported), who asserted it, and merge lineage — is proposed for
+  format 1.2 in [RFC-0003](rfcs/0003-provenance-typing.md).
 
 ### Embeddings & engine-agnostic representation
 
@@ -214,6 +216,19 @@ is. Embeddings are an optional accelerator.
 - The reference implementation (v1.0) does not inline vectors
   (`embeddingsIncluded: false`); the receiver re-embeds on import, restoring vector
   search without any cross-model risk.
+
+### Scopes & visibility *(status: RFC — not yet normative)*
+
+The format says *where* a memory belongs (`contextID` → `context` records, which nest via
+`parentID`) and *how sensitive* it is (`sensitivity`), but not yet *who may see it* — a
+channel, one person, or a group. Vendor visibility settings survive a round-trip only as
+opaque `ext` / metadata: lossless, but not meaningful to a receiver. A shared `visibility`
+model — four levels (`private` / `group` / `shared` / `public`) plus opaque principals,
+context-level defaults with per-record overrides, most-restrictive-wins on merge — is
+proposed for format **1.2** in [RFC-0001](rfcs/0001-scopes-and-visibility.md) (discussion:
+[issue #11](https://github.com/MacPaw/portable-memory/issues/11)). Until it is adopted,
+a receiver SHOULD treat imported memories as private to the importing user unless the
+source says otherwise.
 
 ---
 
@@ -413,7 +428,10 @@ and back out without loss. Two mechanisms make this concrete:
 
 - **`ext` (foreign fields).** On import, any key on an `episode` record that is not in
   the native schema is captured and re-emitted on export. Nothing a vendor attached to
-  a memory is dropped.
+  a memory is dropped. *Scope note:* `ext` is specified for `episode` records only; the
+  reference readers decode the known fields of other kinds and drop the rest. Extending
+  `ext` to every kind is proposed in [RFC-0002](rfcs/0002-ext-for-all-kinds.md) (target
+  format 1.2).
 - **Passthrough (foreign kinds).** An `items/<vendorKind>.jsonl` whose kind this engine
   doesn't recognize is stored raw and re-emitted byte-for-byte.
 
