@@ -51,14 +51,14 @@ This is the data-portability gap of the AI era — the same gap the web closed f
 |---|---|---|
 | **Own your memory.** Export it, keep a local copy, move it between assistants and devices. | **Adopt, don't reinvent.** Implement one small protocol and exchange memory with any other adopter. | **No lock-in.** A neutral, local-first alternative to N proprietary silos. |
 | **Real deletion.** A delete propagates to *every* derived copy, with a recorded proof-of-reach you can verify (supports GDPR / EU AI Act erasure). | **Trust & compliance for free.** Inherit verifiable deletion, an audit trail, and an Evidence Pack you can hand to a compliance team. | **An ecosystem.** Interop is the substrate for portable, composable AI memory. |
-| **Inspect it.** Plain text + checksums — open it in any editor. | **Lossless on-ramp.** Foreign fields and record kinds round-trip verbatim, so adopting never costs you data. | **A conformance bar.** A badge that *means* something, gated on the hardest guarantee. |
+| **Inspect it.** Plain text + checksums — open it in any editor. | **Lossless on-ramp.** Unknown record kinds round-trip verbatim and unknown fields on episodes ride along as `ext`, so adopting never costs you data (every kind: [RFC-0002](Spec/rfcs/0002-ext-for-all-kinds.md)). | **A conformance bar.** A badge that *means* something, gated on the hardest guarantee. |
 
 ## What makes it trustworthy
 
 Three properties set this apart from "just another export schema":
 
 1. **Verifiable deletion is the headline, not a footnote.** A deletion is a first-class, portable **tombstone** that propagates to every artifact derived from the content — indexes, vectors, caches, graph edges, replicas — and records *proof of what was removed*. The conformance badge is **gated on this** (level L2): you must prove a deleted item is unreachable via every retrieval route, not merely "removed from a table."
-2. **Lossless superset, not a lowest common denominator.** A memory can move *into* the standard and back out — or between two vendors — without losing anything. Fields the standard doesn't model are preserved as `ext`; entire vendor-specific record kinds round-trip **verbatim**.
+2. **Lossless superset, not a lowest common denominator.** A memory can move *into* the standard and back out — or between two vendors — without losing what the format doesn't model: entire vendor-specific record kinds round-trip **verbatim**, and fields the standard doesn't model on an episode — the atomic memory — are preserved as `ext`. Extending `ext` carriage to every record kind is proposed in [RFC-0002](Spec/rfcs/0002-ext-for-all-kinds.md).
 3. **Local-first and inspectable.** A bundle is a self-contained directory of JSONL + a manifest + a `CHECKSUMS` file. No server is needed to read, verify, or transfer it; source text is the portable truth and embeddings are an optional, model-tagged accelerator the receiver re-derives — so a bundle is never tied to one embedding model.
 
 ### Design principles

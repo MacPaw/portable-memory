@@ -146,7 +146,7 @@ shared meaning layered on top.
 - **Losslessness prerequisite.** Unknown-field carriage (`ext`) exists today only on
   `episode` (spec §10). For `visibility` on other kinds to survive a re-export by a 1.0/1.1
   reader, `ext` must extend to **every** record kind. That is a separate, prerequisite
-  change (candidate **RFC-0002**); until it lands, a 1.0/1.1 reader would drop `visibility`
+  change (**RFC-0002**); until it lands, a 1.0/1.1 reader would drop `visibility`
   from non-episode kinds on re-export — a losslessness violation we would rather fix than
   document.
 - **Schemas:** one `$defs/visibility` reused by every kind that may carry it; `context`
