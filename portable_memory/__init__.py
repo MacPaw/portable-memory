@@ -48,7 +48,7 @@ from .records import (
 )
 from .tombstone import DerivedRefs, PortableAuditRecord, Tombstone, TombstoneOp
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 # Logic modules.
 from .store import PortableMemoryStore, StoreInfo  # noqa: E402
