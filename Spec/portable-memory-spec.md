@@ -215,6 +215,19 @@ is. Embeddings are an optional accelerator.
   (`embeddingsIncluded: false`); the receiver re-embeds on import, restoring vector
   search without any cross-model risk.
 
+### Scopes & visibility *(status: RFC — not yet normative)*
+
+The format says *where* a memory belongs (`contextID` → `context` records, which nest via
+`parentID`) and *how sensitive* it is (`sensitivity`), but not yet *who may see it* — a
+channel, one person, or a group. Vendor visibility settings survive a round-trip only as
+opaque `ext` / metadata: lossless, but not meaningful to a receiver. A shared `visibility`
+model — four levels (`private` / `group` / `shared` / `public`) plus opaque principals,
+context-level defaults with per-record overrides, most-restrictive-wins on merge — is
+proposed for format **1.2** in [RFC-0001](rfcs/0001-scopes-and-visibility.md) (discussion:
+[issue #11](https://github.com/MacPaw/portable-memory/issues/11)). Until it is adopted,
+a receiver SHOULD treat imported memories as private to the importing user unless the
+source says otherwise.
+
 ---
 
 ## 3. The manifest
