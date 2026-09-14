@@ -15,7 +15,11 @@ from enum import Enum
 
 class MemFormat:
     #: Semantic version of the on-disk format. Importers negotiate by this + capabilities.
-    VERSION = "1.0.0"
+    #: 1.1.0 added the optional manifest fields ``specURL``, ``coverage``, ``scopes`` and
+    #: ``bundleDigest``; 1.0 bundles remain valid (same major).
+    VERSION = "1.1.0"
+    #: Where the specification this bundle follows lives (``manifest.specURL``).
+    SPEC_URL = "https://github.com/MacPaw/portable-memory/blob/main/Spec/portable-memory-spec.md"
     #: Conventional bundle directory suffix.
     BUNDLE_SUFFIX = "mem"
 
@@ -68,6 +72,15 @@ class MemFileEntry:
 
 
 @dataclass(kw_only=True)
+class MemCoverage:
+    """The time span of the memories in a bundle — the earliest and latest episode
+    ``eventTime`` (format 1.1). Lets a reader answer "what period does this archive
+    cover?" without opening a stream."""
+    from_: datetime = field(metadata={"json": "from"})
+    to: datetime = field(metadata={"json": "to"})
+
+
+@dataclass(kw_only=True)
 class MemManifest:
     """Declares everything an importer needs to negotiate capabilities and verify integrity."""
     format: str = field(metadata={"json": "format"})
@@ -83,6 +96,16 @@ class MemManifest:
     counts: dict[str, int] = field(metadata={"json": "counts"})
     files: list[MemFileEntry] = field(metadata={"json": "files"})
     since: datetime | None = field(default=None, metadata={"json": "since"})
+    # ── Format 1.1 additions. Optional on read: a 1.0 bundle has none of them. ──
+    #: URL of the specification the bundle follows.
+    spec_url: str | None = field(default=None, metadata={"json": "specURL"})
+    #: Earliest/latest episode ``eventTime`` in the bundle; absent when it has no episodes.
+    coverage: MemCoverage | None = field(default=None, metadata={"json": "coverage"})
+    #: Sorted, unique scope (context) ids the exported records reference; absent when none.
+    scopes: list[str] | None = field(default=None, metadata={"json": "scopes"})
+    #: Lowercase-hex SHA-256 of the exact ``CHECKSUMS`` bytes — one hash for the whole
+    #: archive. Validators recompute it when present.
+    bundle_digest: str | None = field(default=None, metadata={"json": "bundleDigest"})
 
 
 class MemLimits:

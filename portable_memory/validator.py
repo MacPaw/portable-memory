@@ -178,6 +178,22 @@ class BundleValidator:
                     issues.append(f"malformed {kind.value} record")
                     break
 
+        # ── Archive-level digest (format 1.1, spec §3.1): bundleDigest = sha256(CHECKSUMS). ──
+        if manifest.bundle_digest is not None:
+            cpath = BundlePath.safe_path("CHECKSUMS", bundle)
+            if cpath is None or not os.path.isfile(cpath):
+                issues.append("bundleDigest declared but CHECKSUMS is missing")
+            else:
+                size = MemLimits.file_size(cpath)
+                if size is None or size > MemLimits.max_file_bytes:
+                    issues.append("CHECKSUMS exceeds size limit")
+                else:
+                    with open(cpath, "rb") as fh:
+                        if sha256_hex(fh.read()) != manifest.bundle_digest:
+                            issues.append(
+                                "bundleDigest mismatch: CHECKSUMS does not hash to the manifest's bundleDigest"
+                            )
+
         return ValidationResult(manifest=manifest, issues=issues)
 
     @staticmethod

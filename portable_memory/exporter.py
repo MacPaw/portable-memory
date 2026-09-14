@@ -18,6 +18,7 @@ from ._codec import to_line
 from .format import (
     ConformanceLevel,
     ExportMode,
+    MemCoverage,
     MemFileEntry,
     MemFormat,
     MemKind,
@@ -125,8 +126,9 @@ class BundleExporter:
         counts[MemKind.PROCEDURE.value] = self._write_jsonl(
             store.export_procedures(), "items/procedure.jsonl", root, files
         )
+        contexts = store.export_contexts()
         counts[MemKind.CONTEXT.value] = self._write_jsonl(
-            store.export_contexts(), "items/context.jsonl", root, files
+            contexts, "items/context.jsonl", root, files
         )
         counts[MemKind.COMMUNITY.value] = self._write_jsonl(
             store.export_communities(), "items/community.jsonl", root, files
@@ -166,7 +168,7 @@ class BundleExporter:
             audit = store.export_audit_log(cutoff)
             counts["audit"] = self._write_jsonl(audit, "audit/log.jsonl", root, files)
 
-        self._write_checksums(files, root)
+        checksums = self._write_checksums(files, root)
         capabilities = [
             "bitemporal",
             "tombstones",
@@ -185,6 +187,9 @@ class BundleExporter:
             counts=counts,
             files=files,
             capabilities=capabilities,
+            coverage=_coverage_of(episodes),
+            scopes=_scopes_of(episodes, contexts),
+            bundle_digest=sha256_hex(checksums),
         )
         self._write_manifest(manifest, root, signing_key)
         return manifest
@@ -214,7 +219,7 @@ class BundleExporter:
         counts["provenanceEdge"] = self._write_jsonl(
             store.export_edges(), "provenance/edges.jsonl", root, files
         )
-        self._write_checksums(files, root)
+        checksums = self._write_checksums(files, root)
         capabilities = ["evidence-pack", "proof-of-deletion", "audit", "provenance"]
         if signing_key is not None:
             capabilities.append("signed")
@@ -226,6 +231,7 @@ class BundleExporter:
             counts=counts,
             files=files,
             capabilities=capabilities,
+            bundle_digest=sha256_hex(checksums),
         )
         self._write_manifest(manifest, root, signing_key)
         return manifest
@@ -272,9 +278,16 @@ class BundleExporter:
         counts: dict[str, int],
         files: list[MemFileEntry],
         capabilities: list[str],
+        coverage: MemCoverage | None = None,
+        scopes: list[str] | None = None,
+        bundle_digest: str | None = None,
     ) -> MemManifest:
         return MemManifest(
             format=MemFormat.VERSION,
+            spec_url=MemFormat.SPEC_URL,
+            coverage=coverage,
+            scopes=scopes,
+            bundle_digest=bundle_digest,
             generator=info.generator,
             conformance_level=level,
             # Aware UTC — a naive datetime.now() is LOCAL time, and the codec would
@@ -292,13 +305,15 @@ class BundleExporter:
             files=sorted(files, key=lambda f: f.path),
         )
 
-    def _write_checksums(self, files: list[MemFileEntry], root: str) -> None:
+    def _write_checksums(self, files: list[MemFileEntry], root: str) -> bytes:
         """Write ``CHECKSUMS`` in ``sha256sum`` format (``<hex>  <path>``), sorted by path
-        with a trailing newline. Two spaces separate hash and path per the tool's format."""
+        with a trailing newline. Two spaces separate hash and path per the tool's format.
+        Returns the exact bytes written — the manifest's ``bundleDigest`` hashes them."""
         ordered = sorted(files, key=lambda f: f.path)
         lines = [f"{f.sha256}  {f.path}" for f in ordered]
         data = ("\n".join(lines) + "\n").encode("utf-8")
         self._write_bytes(data, "CHECKSUMS", root)
+        return data
 
     def _write_episodes(
         self,
@@ -358,3 +373,22 @@ def _rmtree(path: str) -> None:
         else:
             os.remove(child)
     os.rmdir(path)
+
+
+# ── Format 1.1 manifest summaries (spec §3.1) ─────────────────────────────────────────
+
+def _coverage_of(episodes: list) -> MemCoverage | None:
+    """Earliest and latest ``eventTime`` among the episodes *in this bundle*; None when
+    the bundle carries no episodes."""
+    if not episodes:
+        return None
+    times = [e.event_time for e in episodes]
+    return MemCoverage(from_=min(times), to=max(times))
+
+
+def _scopes_of(episodes: list, contexts: list) -> list[str] | None:
+    """Sorted (by code point), de-duplicated scope ids: every episode ``contextID`` plus
+    the id of every exported ``context`` record; None when empty."""
+    ids = {e.context_id for e in episodes if e.context_id}
+    ids.update(c.id for c in contexts)
+    return sorted(ids) or None

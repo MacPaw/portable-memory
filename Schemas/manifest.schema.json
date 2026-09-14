@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://macpaw.github.io/portable-memory/schemas/manifest.schema.json",
   "title": "Portable Memory manifest",
-  "description": "manifest.json — declares format version, capabilities, model tags, counts, and per-file integrity for a .mem bundle.",
+  "description": "manifest.json — declares format version, capabilities, model tags, counts, per-file integrity and (format 1.1) coverage, scopes and an archive-level digest for a .mem bundle.",
   "type": "object",
   "required": ["format", "generator", "conformanceLevel", "createdAt", "exportMode", "schemaVersion", "embeddingModel", "embeddingDim", "embeddingsIncluded", "capabilities", "counts", "files"],
   "properties": {
@@ -12,6 +12,19 @@
     "createdAt": { "type": "string", "format": "date-time" },
     "exportMode": { "type": "string", "enum": ["full", "incremental"] },
     "since": { "type": "string", "format": "date-time", "description": "present for incremental exports" },
+    "specURL": { "type": "string", "format": "uri", "description": "format 1.1 — URL of the specification the bundle follows" },
+    "coverage": {
+      "type": "object",
+      "description": "format 1.1 — earliest and latest episode eventTime in the bundle; absent when there are no episodes",
+      "required": ["from", "to"],
+      "properties": {
+        "from": { "type": "string", "format": "date-time" },
+        "to": { "type": "string", "format": "date-time" }
+      },
+      "additionalProperties": false
+    },
+    "scopes": { "type": "array", "items": { "type": "string" }, "uniqueItems": true, "description": "format 1.1 — sorted scope (context) ids the exported records reference; absent when none" },
+    "bundleDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "format 1.1 — sha256 of the exact CHECKSUMS bytes: one hash for the whole archive" },
     "schemaVersion": { "type": "integer" },
     "embeddingModel": { "type": "string" },
     "embeddingDim": { "type": "integer", "minimum": 0 },

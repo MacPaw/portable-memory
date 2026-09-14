@@ -19,6 +19,7 @@ from .format import (
     BundlePath,
     ConformanceLevel,
     ExportMode,
+    MemCoverage,
     MemFileEntry,
     MemFormat,
     MemKind,
@@ -64,7 +65,7 @@ from .importer import BundleImporter, MemImportError  # noqa: E402
 __all__ = [
     "canonical_json", "format_timestamp", "parse_timestamp", "to_wire", "from_wire", "to_line",
     "MemFormat", "MemKind", "IMPORT_ORDER", "ExportMode", "ConformanceLevel",
-    "MemFileEntry", "MemManifest", "MemLimits", "BundlePath",
+    "MemFileEntry", "MemManifest", "MemCoverage", "MemLimits", "BundlePath",
     "sha256_hex", "sha256_hex_str", "embedding_cache_key",
     "KNOWN_EPISODE_KEYS", "extract_episode_ext", "merge_episode_ext",
     "PortableEpisode", "PortableEntity", "PortableEdge", "PortableFact", "PortableFactLink",

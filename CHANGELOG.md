@@ -6,6 +6,16 @@ independent of the on-disk **format** version (`format` in the manifest).
 
 ## [Unreleased]
 
+### Added
+
+- **Format 1.1.0** — the manifest gains four optional fields (spec §3.1): `specURL`,
+  `coverage` (`{from, to}` — earliest/latest episode `eventTime`), `scopes` (sorted
+  context ids the records reference) and `bundleDigest` (sha256 of the exact `CHECKSUMS`
+  bytes — one hash for the whole archive). The exporter emits them; the validator
+  recomputes `bundleDigest` when present. 1.0 bundles remain valid — the shipped 1.0
+  fixtures double as backward-compatibility tests. `MemCoverage` is exported from the
+  package.
+
 ## [0.2.0] - 2026-09-14
 
 `pip install portable-memory` now installs the **`mem` command line** — paste an
