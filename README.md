@@ -18,7 +18,7 @@ Your AI memory is already portable enough to *paste*: every assistant now hands 
 ![mem paste → validate → render: the pasted memory text becomes a verifiable .mem bundle and back](docs/demo.gif)
 
 ```bash
-pip install portable-memory
+pip install portable-memory      # or: brew install macpaw/taps/portable-memory
 
 # 1. Run the standard memory-export prompt in ChatGPT (or Claude, Gemini, Grok…) and save the
 #    code block it returns as export.txt. Then:
@@ -152,6 +152,12 @@ What a source doesn't model rides in via `ext` (fields) and passthrough (kinds);
 
 ```bash
 pip install portable-memory
+```
+
+On macOS or Linux, Homebrew installs the `mem` command from [MacPaw's tap](https://github.com/MacPaw/homebrew-taps) (the formula tracks PyPI releases):
+
+```bash
+brew install macpaw/taps/portable-memory
 ```
 
 Signing (detached Ed25519 signatures over the manifest, plus signed tombstones) is optional — it lazily imports [`cryptography`](https://pypi.org/project/cryptography/) only when you actually sign or verify:

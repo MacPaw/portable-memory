@@ -6,6 +6,16 @@ independent of the on-disk **format** version (`format` in the manifest).
 
 ## [Unreleased]
 
+### Added
+
+- **Homebrew** — `brew install macpaw/taps/portable-memory` installs the `mem` command from
+  [MacPaw's Homebrew tap](https://github.com/MacPaw/homebrew-taps); the formula tracks PyPI
+  releases (bump step in `RELEASING.md`).
+- **Python 3.14** in the CI matrix and the package classifiers (the Homebrew formula builds on
+  `python@3.14`).
+- **`RELEASING.md`** — the release runbook: version bump, changelog, tag = version, GitHub
+  release → PyPI Trusted Publishing, verification, Homebrew bump, Swift SDK mirror.
+
 ## [0.3.0] - 2026-09-14
 
 Format **1.1.0**: the manifest now says what the archive covers, in which scopes, and
